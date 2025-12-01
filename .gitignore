@@ -1,0 +1,4 @@
+*.retry
+*.key
+.DS_Store
+.env

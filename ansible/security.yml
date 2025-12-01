@@ -1,0 +1,64 @@
+---
+- name: Harden Ubuntu VPS
+  hosts: vps
+  become: true
+  vars:
+    ssh_port: 22
+
+  tasks:
+    - name: Update apt cache and upgrade all packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+        cache_valid_time: 3600
+
+    - name: Install essential security packages
+      apt:
+        name:
+          - ufw
+          - fail2ban
+        state: present
+
+    # --- UFW Configuration ---
+    - name: Deny all incoming traffic by default
+      ufw:
+        default: deny
+        direction: incoming
+
+    - name: Allow all outgoing traffic by default
+      ufw:
+        default: allow
+        direction: outgoing
+
+    - name: Allow SSH connections
+      ufw:
+        rule: allow
+        port: "{{ ssh_port }}"
+        proto: tcp
+
+    - name: Enable UFW (Firewall)
+      ufw:
+        state: enabled
+
+    # --- SSH Hardening ---
+    - name: Disable Root Login via SSH
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^PermitRootLogin"
+        line: "PermitRootLogin no"
+        state: present
+      notify: Restart SSH
+
+    - name: Disable Password Authentication (Force Key Auth)
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^PasswordAuthentication"
+        line: "PasswordAuthentication no"
+        state: present
+      notify: Restart SSH
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted

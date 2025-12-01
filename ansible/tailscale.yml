@@ -1,0 +1,35 @@
+---
+- name: Install and Configure Tailscale
+  hosts: vps
+  become: true
+  vars:
+    tailscale_auth_key: "{{ tailscale_auth_key }}"
+
+  tasks:
+    - name: Add Tailscale GPG key
+      get_url:
+        url: https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg
+        dest: /usr/share/keyrings/tailscale-archive-keyring.gpg
+
+    - name: Add Tailscale repository
+      get_url:
+        url: https://pkgs.tailscale.com/stable/ubuntu/jammy.tailscale-keyring.list
+        dest: /etc/apt/sources.list.d/tailscale.list
+
+    - name: Install Tailscale
+      apt:
+        update_cache: yes
+        name: tailscale
+        state: present
+
+    - name: Enable Tailscale service
+      service:
+        name: tailscaled
+        state: started
+        enabled: yes
+
+    - name: Authenticate Tailscale (One time run)
+      command: tailscale up --authkey={{ tailscale_auth_key }} --hostname=racknerd-vps
+      register: tailscale_start
+      changed_when: "'Success' in tailscale_start.stdout"
+      ignore_errors: yes # Ignores error if already logged in
