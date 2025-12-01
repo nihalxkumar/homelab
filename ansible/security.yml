@@ -6,13 +6,13 @@
     ssh_port: 22
 
   tasks:
-    - name: Update apt cache and upgrade all packages
+    - name: System | Update apt cache and upgrade
       apt:
         update_cache: yes
         upgrade: dist
         cache_valid_time: 3600
 
-    - name: Install essential security packages
+    - name: System | Install security packages
       apt:
         name:
           - ufw
@@ -20,28 +20,71 @@
         state: present
 
     # --- UFW Configuration ---
-    - name: Deny all incoming traffic by default
+    - name: UFW | Deny all incoming by default
       ufw:
         default: deny
         direction: incoming
 
-    - name: Allow all outgoing traffic by default
+    - name: UFW | Allow all outgoing by default
       ufw:
         default: allow
         direction: outgoing
 
-    - name: Allow SSH connections
+    - name: UFW | Allow SSH
       ufw:
         rule: allow
         port: "{{ ssh_port }}"
         proto: tcp
 
-    - name: Enable UFW (Firewall)
+    - name: UFW | Allow K3s API
+      ufw:
+        rule: allow
+        port: "6443"
+        proto: tcp
+
+    - name: UFW | Allow HTTP/HTTPS
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+      loop:
+        - "80"
+        - "443"
+
+    - name: UFW | Allow all on Tailscale interface
+      ufw:
+        rule: allow
+        direction: in
+        interface: tailscale0
+
+    - name: UFW | Allow K3s Pod Network
+      ufw:
+        rule: allow
+        from_ip: 10.42.0.0/16
+
+    - name: UFW | Allow K3s Service Network
+      ufw:
+        rule: allow
+        from_ip: 10.43.0.0/16
+
+    - name: UFW | Allow Flannel VXLAN (Overlay Network)
+      ufw:
+        rule: allow
+        port: "8472"
+        proto: udp
+
+    - name: UFW | Allow Kubelet Metrics
+      ufw:
+        rule: allow
+        port: "10250"
+        proto: tcp
+
+    - name: UFW | Enable Firewall
       ufw:
         state: enabled
 
     # --- SSH Hardening ---
-    - name: Disable Root Login via SSH
+    - name: SSH | Disable Root Login
       lineinfile:
         path: /etc/ssh/sshd_config
         regexp: "^PermitRootLogin"
@@ -49,7 +92,7 @@
         state: present
       notify: Restart SSH
 
-    - name: Disable Password Authentication (Force Key Auth)
+    - name: SSH | Disable Password Authentication
       lineinfile:
         path: /etc/ssh/sshd_config
         regexp: "^PasswordAuthentication"
