@@ -3,3 +3,7 @@
 .DS_Store
 .env
 ansible/.vault_pass
+# Kubernetes config files containing credentials
+ansible/k3s-*.yaml
+ansible/*kubeconfig*.yaml
+*.kubeconfig
