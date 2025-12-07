@@ -35,7 +35,8 @@ spec:
           securePort: 10250
         
         config:
-          issuers: []
+          apiVersion: v1
+          kind: Config
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
