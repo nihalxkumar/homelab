@@ -15,28 +15,7 @@ spec:
       releaseName: cert-manager
       skipCrds: false
       values: |
-        global:
-          leaderElection:
-            namespace: cert-manager
-        
         installCRDs: true
-        
-        serviceAccount:
-          create: true
-          name: cert-manager
-        
-        securityContext:
-          fsGroup: 1001
-          runAsNonRoot: true
-          runAsUser: 1001
-        
-        webhook:
-          enabled: true
-          securePort: 10250
-        
-        config:
-          apiVersion: v1
-          kind: Config
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
