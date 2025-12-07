@@ -5,10 +5,14 @@ metadata:
   namespace: thelounge
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
     - match: Host(`irc.nihalxkumar.dev`)
       kind: Rule
       services:
         - name: thelounge
           port: 9000
+  tls:
+    certResolver: letsencrypt
+    domains:
+      - main: irc.nihalxkumar.dev

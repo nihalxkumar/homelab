@@ -5,10 +5,14 @@ metadata:
   namespace: argocd
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
     - match: Host(`argocd.nihalxkumar.dev`)
       kind: Rule
       services:
         - name: argocd-server
           port: 80
+  tls:
+    certResolver: letsencrypt
+    domains:
+      - main: argocd.nihalxkumar.dev
