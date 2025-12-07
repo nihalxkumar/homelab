@@ -26,6 +26,12 @@ sync-kubeconfig:
 status:
     watch kubectl get nodes,pods -A
 
+verify-cert:
+    export KUBECONFIG=~/.kube/config-vps && kubectl get certificate -A && echo "" && kubectl get clusterissuer -o wide
+
+logs-cert:
+    export KUBECONFIG=~/.kube/config-vps && kubectl logs -n cert-manager -l app=cert-manager -f
+
 # --- Security (SOPS) ---
 
 encrypt file:

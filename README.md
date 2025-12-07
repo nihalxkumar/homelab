@@ -14,12 +14,12 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
 
 #### Explore the directories:
 
-- **`Justfile`** - Task runner for common operations (provisioning, kubeconfig sync, SOPS encryption, etc.)
+- **`Justfile`** - Task runner for common operations (provisioning, kubeconfig sync, SOPS encryption, certificate verification, etc.)
 - **`ansible/`** - Ansible playbooks for bare-metal provisioning, K3s installation, security hardening, and Tailscale configuration
 - **`kubernetes/`** - Kubernetes manifests organized by:
   - `apps/` - Application deployments managed via GitOps
   - `bootstrap/` - Core cluster components (ArgoCD, etc.)
-  - `infrastructure/` - Infrastructure-level resources (ingress, monitoring, etc.)
+  - `infrastructure/` - Infrastructure-level resources (Traefik ingress, cert-manager, DNS-01 ACME, etc.)
 - **`terraform/`** - Terraform configurations for cloud resource provisioning
 - **`scripts/`** - Utility scripts for automation and maintenance
 
@@ -55,7 +55,7 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
     <tr>
         <td><img width="32" src="https://avatars.githubusercontent.com/u/314135?s=200&v=4"></td>
         <td><a href="https://www.cloudflare.com">Cloudflare</a></td>
-        <td>Tunnel public exposure without port-forwarding with DNS-01 ACME setup</td>
+        <td>DNS-01 ACME challenges + DDoS/WAF protection via Tunnel</td>
     </tr>
     <tr>
         <td><img width="32" src="https://www.docker.com/wp-content/uploads/2022/03/Moby-logo.png"></td>
@@ -75,7 +75,7 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
     <tr>
         <td><img width="32" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Traefik_Logo.svg/960px-Traefik_Logo.svg.png"></td>
         <td><a href="https://traefik.io/traefik">Traefik</a></td>
-        <td>Ingress controller & reverse proxy with automatic TLS</td>
+        <td>Ingress controller & reverse proxy with cert-manager TLS</td>
     </tr>
     <tr>
         <td><img width="32" src="https://avatars.githubusercontent.com/u/3380462"></td>
@@ -103,6 +103,11 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
         <td>Infrastructure as Code for cloud resources</td>
     </tr>
     <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/14336958?s=200&v=4"></td>
+        <td><a href="https://jetstack.io/cert-manager">cert-manager</a></td>
+        <td>Kubernetes certificate management (Let's Encrypt DNS-01)</td>
+    </tr>
+    <tr>
         <td><img width="32" src="https://github.com/FiloSottile/age/raw/main/logo/logo_white.svg"></td>
         <td><a href="https://github.com/getsops/sops">SOPS + Age</a></td>
         <td>Secrets encryption at rest</td>
@@ -118,4 +123,3 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
         <td>6 GB RAM, 5 vCPU, 100 GB NVMe SSD</td>
     </tr>
 </table>
-
