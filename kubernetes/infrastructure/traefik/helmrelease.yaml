@@ -46,11 +46,6 @@ spec:
             tls:
               enabled: true
               options: default
-              certResolver: letsencrypt
-              domains:
-                - main: nihalxkumar.dev
-                  sans:
-                    - "*.nihalxkumar.dev"
           metrics:
             port: 8080
             expose: false
@@ -73,11 +68,7 @@ spec:
           - "--global.checknewversion=false"
           - "--global.sendanonymoususage=false"
         
-        additionalArguments:
-          - "--certificatesresolvers.letsencrypt.acme.email=admin@nihalxkumar.dev"
-          - "--certificatesresolvers.letsencrypt.acme.storage=/data/acme.json"
-          - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
-          - "--certificatesresolvers.letsencrypt.acme.dnschallenge=false"
+        additionalArguments: []
   destination:
     server: https://kubernetes.default.svc
     namespace: traefik
