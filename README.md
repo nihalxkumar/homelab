@@ -113,6 +113,11 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
         <td>Secrets encryption at rest</td>
     </tr>
     <tr>
+        <td><img width="32" src="https://jj-vcs.dev/assets/logo.svg"></td>
+        <td><a href="https://jj-vcs.dev">jj + Git</a></td>
+        <td>Version control with colocated .git directory</td>
+    </tr>
+    <tr>
         <td><img width="32" src="https://avatars.githubusercontent.com/u/14336958?s=200&v=4"></td>
         <td><a href="https://thelounge.chat">The Lounge</a></td>
         <td>Web Client for Internet Relay Chat</td>
