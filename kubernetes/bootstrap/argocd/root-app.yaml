@@ -11,6 +11,10 @@ spec:
     repoURL: https://gitlab.com/nihalxkumar/homelab-infra.git
     targetRevision: main
     path: kubernetes
+    kustomize:
+      dirs:
+        - kubernetes/bootstrap
+        - kubernetes/infrastructure
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
