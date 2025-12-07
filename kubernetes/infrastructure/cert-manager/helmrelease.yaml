@@ -3,8 +3,10 @@ kind: Application
 metadata:
   name: cert-manager
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
-  project: default
+  project: homelab
   source:
     repoURL: https://charts.jetstack.io
     chart: cert-manager
@@ -12,30 +14,28 @@ spec:
     helm:
       releaseName: cert-manager
       skipCrds: false
-  values:
-    global:
-      leaderElection:
-        namespace: cert-manager
-    
-    installCRDs: true
-    
-    serviceAccount:
-      create: true
-      name: cert-manager
-    
-    securityContext:
-      fsGroup: 1001
-      runAsNonRoot: true
-      runAsUser: 1001
-    
-    # Enable webhook
-    webhook:
-      enabled: true
-      securePort: 10250
-    
-    # Global configuration
-    config:
-      issuers: []
+      values: |
+        global:
+          leaderElection:
+            namespace: cert-manager
+        
+        installCRDs: true
+        
+        serviceAccount:
+          create: true
+          name: cert-manager
+        
+        securityContext:
+          fsGroup: 1001
+          runAsNonRoot: true
+          runAsUser: 1001
+        
+        webhook:
+          enabled: true
+          securePort: 10250
+        
+        config:
+          issuers: []
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
