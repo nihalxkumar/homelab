@@ -55,7 +55,7 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
     <tr>
         <td><img width="32" src="https://avatars.githubusercontent.com/u/314135?s=200&v=4"></td>
         <td><a href="https://www.cloudflare.com">Cloudflare</a></td>
-        <td>Tunnel public exposure without port-forwarding</td>
+        <td>Tunnel public exposure without port-forwarding with DNS-01 ACME setup</td>
     </tr>
     <tr>
         <td><img width="32" src="https://www.docker.com/wp-content/uploads/2022/03/Moby-logo.png"></td>
