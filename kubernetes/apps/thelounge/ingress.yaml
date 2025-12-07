@@ -1,0 +1,14 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: thelounge
+  namespace: thelounge
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`irc.nihalxkumar.dev`)
+      kind: Rule
+      services:
+        - name: thelounge
+          port: 9000

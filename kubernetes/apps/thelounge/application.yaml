@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: thelounge
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://gitlab.com/nihalxkumar/homelab-infra.git
+    targetRevision: main
+    path: kubernetes/apps/thelounge
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: thelounge
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
