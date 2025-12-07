@@ -35,6 +35,12 @@ spec:
       kind: ClusterIssuer
     - group: traefik.io
       kind: IngressRoute
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRole
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
+    - group: networking.k8s.io
+      kind: IngressClass
   namespaceResourceBlacklist:
     - group: ''
       kind: ResourceQuota
