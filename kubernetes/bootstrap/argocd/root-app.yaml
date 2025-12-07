@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root
+  name: infrastructure
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -10,11 +10,7 @@ spec:
   source:
     repoURL: https://gitlab.com/nihalxkumar/homelab-infra.git
     targetRevision: main
-    path: kubernetes
-    kustomize:
-      dirs:
-        - kubernetes/bootstrap
-        - kubernetes/infrastructure
+    path: kubernetes/infrastructure
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
