@@ -6,3 +6,5 @@ metadata:
 resources:
   - helmrelease.yaml
   - clusterissuer.yaml
+  - selfsigned-issuer.yaml
+  - secrets/cloudflare-secret.yaml
