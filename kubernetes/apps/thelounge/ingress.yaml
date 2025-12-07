@@ -13,6 +13,4 @@ spec:
         - name: thelounge
           port: 9000
   tls:
-    certResolver: letsencrypt
-    domains:
-      - main: irc.nihalxkumar.dev
+    secretName: nihalxkumar-dev-tls
