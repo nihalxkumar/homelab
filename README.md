@@ -17,9 +17,9 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
 - **`Justfile`** - Task runner for common operations (provisioning, kubeconfig sync, SOPS encryption, certificate verification, etc.)
 - **`ansible/`** - Ansible playbooks for bare-metal provisioning, K3s installation, security hardening, and Tailscale configuration
 - **`kubernetes/`** - Kubernetes manifests organized by:
-  - `apps/` - Application deployments managed via GitOps
-  - `bootstrap/` - Core cluster components (ArgoCD, etc.)
-  - `infrastructure/` - Infrastructure-level resources (Traefik ingress, cert-manager, DNS-01 ACME, etc.)
+   - `apps/` - Application deployments managed via GitOps
+   - `bootstrap/` - Core cluster components (ArgoCD, etc.)
+   - `infrastructure/` - Infrastructure-level resources (Traefik ingress, cert-manager, DNS-01 ACME, etc.)
 - **`terraform/`** - Terraform configurations for cloud resource provisioning
 - **`scripts/`** - Utility scripts for automation and maintenance
 
@@ -73,10 +73,10 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
         <td>Container-orchestration system</td>
     </tr>
     <tr>
-        <td><img width="32" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Traefik_Logo.svg/960px-Traefik_Logo.svg.png"></td>
-        <td><a href="https://traefik.io/traefik">Traefik</a></td>
-        <td>Ingress controller & reverse proxy with cert-manager TLS</td>
-    </tr>
+         <td><img width="32" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Traefik_Logo.svg/960px-Traefik_Logo.svg.png"></td>
+         <td><a href="https://traefik.io/traefik">Traefik</a></td>
+         <td>Ingress controller & reverse proxy (TLSStore + Kubernetes secret-based TLS)</td>
+     </tr>
     <tr>
         <td><img width="32" src="https://avatars.githubusercontent.com/u/3380462"></td>
         <td><a href="https://prometheus.io">Prometheus</a></td>
@@ -103,10 +103,10 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
         <td>Infrastructure as Code for cloud resources</td>
     </tr>
     <tr>
-        <td><img width="32" src="https://avatars.githubusercontent.com/u/14336958?s=200&v=4"></td>
-        <td><a href="https://jetstack.io/cert-manager">cert-manager</a></td>
-        <td>Kubernetes certificate management (Let's Encrypt DNS-01)</td>
-    </tr>
+         <td><img width="32" src="https://avatars.githubusercontent.com/u/14336958?s=200&v=4"></td>
+         <td><a href="https://jetstack.io/cert-manager">cert-manager</a></td>
+         <td>Automated certificate management (Let's Encrypt DNS-01 via Cloudflare)</td>
+     </tr>
     <tr>
         <td><img width="32" src="https://github.com/FiloSottile/age/raw/main/logo/logo_white.svg"></td>
         <td><a href="https://github.com/getsops/sops">SOPS + Age</a></td>
