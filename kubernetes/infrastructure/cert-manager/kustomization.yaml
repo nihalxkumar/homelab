@@ -6,8 +6,9 @@ metadata:
 resources:
   - helmrelease.yaml
   - clusterissuer.yaml
-  - selfsigned-issuer.yaml
   - certificate.yaml
   # cloudflare-api-token secret is created manually and maintained separately
   # (SOPS encryption is incompatible with ArgoCD sync)
   # - secrets/cloudflare-secret.yaml
+  # selfsigned-issuer.yaml removed: uses same name/namespace as certificate.yaml
+  # (was actually using letsencrypt-prod, not self-signed)
