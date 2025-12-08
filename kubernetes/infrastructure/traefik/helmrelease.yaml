@@ -48,7 +48,6 @@ spec:
             protocol: TCP
             tls:
               enabled: true
-              options: default
           metrics:
             port: 8080
             expose: false
@@ -77,7 +76,6 @@ spec:
            - "--global.sendanonymoususage=false"
          
         additionalArguments:
-           - "--entryPoints.websecure.http.tls.options=default"
            - "--providers.kubernetescrd=true"
            - "--providers.kubernetescrd.allowCrossNamespace=true"
   destination:
