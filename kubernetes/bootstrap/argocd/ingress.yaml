@@ -1,16 +1,2 @@
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: argocd-server
-  namespace: argocd
-spec:
-  entryPoints:
-    - websecure
-  routes:
-    - match: Host(`argocd.nihalxkumar.dev`)
-      kind: Rule
-      services:
-        - name: argocd-server
-          port: 80
-  tls:
-    secretName: nihalxkumar-dev-tls
+# This IngressRoute has been moved to kubernetes/infrastructure/traefik/ingress-argocd.yaml
+# to ensure it's in the same namespace as Traefik and the TLS certificate secret
