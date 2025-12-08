@@ -1,0 +1,17 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: argocd-server
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`argocd.nihalxkumar.dev`)
+      kind: Rule
+      services:
+        - name: argocd-server
+          port: 80
+          namespace: argocd
+  tls:
+    secretName: nihalxkumar-dev-tls
