@@ -5,4 +5,3 @@ metadata:
 
 resources:
   - helmrelease.yaml
-  # ArgoCD IngressRoute moved to kubernetes/bootstrap/argocd/ingress.yaml
