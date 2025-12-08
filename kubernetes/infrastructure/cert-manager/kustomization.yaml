@@ -7,4 +7,5 @@ resources:
   - helmrelease.yaml
   - clusterissuer.yaml
   - selfsigned-issuer.yaml
+  - certificate.yaml
   - secrets/cloudflare-secret.yaml
