@@ -8,5 +8,6 @@ k3s_server_args: >-
   --tls-san 100.84.231.21
   --write-kubeconfig-mode 644
   --disable-cloud-controller
+  --disable traefik
 # --kubelet-arg="protect-kernel-defaults=true"
 k3s_admin_user: "arjun"
