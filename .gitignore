@@ -8,3 +8,4 @@ ansible/k3s-*.yaml
 ansible/*kubeconfig*.yaml
 *.kubeconfig
 AGENT.md
+.worktrees/
