@@ -65,10 +65,13 @@ spec:
           name: traefik
         
         globalArguments:
-          - "--global.checknewversion=false"
-          - "--global.sendanonymoususage=false"
-        
-        additionalArguments: []
+           - "--global.checknewversion=false"
+           - "--global.sendanonymoususage=false"
+         
+        additionalArguments:
+           - "--entryPoints.websecure.http.tls.options=default"
+           - "--providers.kubernetescrd=true"
+           - "--providers.kubernetescrd.allowCrossNamespace=true"
   destination:
     server: https://kubernetes.default.svc
     namespace: traefik
