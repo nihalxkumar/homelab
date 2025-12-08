@@ -7,4 +7,7 @@ resources:
   - helmrelease.yaml
   - clusterissuer.yaml
   - selfsigned-issuer.yaml
-  - secrets/cloudflare-secret.yaml
+  - certificate.yaml
+  # cloudflare-api-token secret is created manually and maintained separately
+  # (SOPS encryption is incompatible with ArgoCD sync)
+  # - secrets/cloudflare-secret.yaml
