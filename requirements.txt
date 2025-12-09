@@ -1,0 +1,23 @@
+# Core infrastructure tools
+ansible==2.10.0
+ansible-lint==24.10.0
+
+# Kubernetes management
+kubernetes==30.0.0
+kustomize==0.0.1
+
+# Secret management
+sops==3.9.1
+
+# YAML validation
+yamllint==1.35.1
+pyyaml==6.0.1
+
+# Security & scanning
+detect-secrets==1.4.0
+
+# Terraform support
+python-terraform==0.10.2
+
+# Ansible Galaxy
+ansible-core==2.17.0

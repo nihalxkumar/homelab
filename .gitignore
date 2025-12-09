@@ -8,4 +8,9 @@ ansible/k3s-*.yaml
 ansible/*kubeconfig*.yaml
 *.kubeconfig
 AGENT.md
+docs/
 .worktrees/
+# CI/CD artifacts
+terraform/tfplan
+/tmp/
+.cache/
