@@ -1,0 +1,101 @@
+stages:
+  - lint
+  - security
+
+variables:
+  FF_USE_FASTZIP: "true"
+  CACHE_COMPRESSION_LEVEL: "fastest"
+
+# Shared cache config
+.cache_policy: &cache_policy
+  cache:
+    policy: pull-push
+    paths:
+      - .cache/pip
+    key: ${CI_COMMIT_REF_SLUG}
+
+# ============================================================================
+# LINT STAGE
+# ============================================================================
+
+ansible:lint:
+  stage: lint
+  image: python:3.12-slim
+  <<: *cache_policy
+  before_script:
+    - pip install --cache-dir .cache/pip -q ansible-lint ansible-core
+  script:
+    - echo "Linting Ansible playbooks (warnings only)..."
+    - ansible-lint ansible/ -p || true
+  allow_failure: true
+  only:
+    - merge_requests
+    - main
+
+docs:check:
+  stage: lint
+  image: alpine:latest
+  script:
+    - "[ -f README.md ] && wc -l README.md || (echo 'ERROR: README.md missing' && exit 1)"
+  allow_failure: true
+  only:
+    - merge_requests
+    - main
+
+# ============================================================================
+# SECURITY STAGE
+# ============================================================================
+
+secrets:detect:
+  stage: security
+  image: python:3.12-slim
+  <<: *cache_policy
+  before_script:
+    - pip install --cache-dir .cache/pip -q detect-secrets
+  script:
+    - echo "Scanning for secrets..."
+    - detect-secrets scan --baseline .secrets.baseline || true
+  allow_failure: true
+  only:
+    - merge_requests
+    - main
+
+sops:validate:
+  stage: security
+  image: alpine:latest
+  script:
+    - echo "Validating SOPS encrypted files..."
+    - |
+      find kubernetes -name "*.encrypted.yaml" -o -name "*.enc.yaml" 2>/dev/null | while read file; do
+        if [ -z "$(file "$file" 2>/dev/null | grep 'ASCII')" ]; then
+          echo "✓ $file is encrypted"
+        else
+          echo "✗ $file should be encrypted but isn't"
+          exit 1
+        fi
+      done
+    - echo "✓ All secrets appear to be encrypted"
+  allow_failure: false
+  only:
+    - merge_requests
+    - main
+
+# ============================================================================
+# RENOVATE SCHEDULE (Runs on cron, not on MR)
+# ============================================================================
+
+renovate:scheduled:
+  stage: security
+  image: renovate/renovate:39
+  script:
+    - export RENOVATE_TOKEN=$CI_JOB_TOKEN
+    - export RENOVATE_GITLAB_HOST=gitlab.com
+    - export RENOVATE_PLATFORM=gitlab
+    - export RENOVATE_REPOSITORY=$CI_PROJECT_PATH
+    - export RENOVATE_AUTODISCOVER=false
+    - export LOG_LEVEL=info
+    - renovate
+  only:
+    - schedules
+  allow_failure: true
+  timeout: 1 hour
