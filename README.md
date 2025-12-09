@@ -33,7 +33,7 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
         <th>Description</th>
     </tr>
     <tr>
-        <td><img width="32" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Ubuntu_logoib.svg/960px-Ubuntu_logoib.svg.png"></td>
+        <td><img width="32" src="https://icon.icepanel.io/Technology/svg/Ubuntu.svg"></td>
         <td><a href="https://ubuntu.com">Ubuntu Server</a></td>
         <td>Base OS for Kubernetes nodes</td>
     </tr>
@@ -73,7 +73,7 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
         <td>Container-orchestration system</td>
     </tr>
     <tr>
-         <td><img width="32" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Traefik_Logo.svg/960px-Traefik_Logo.svg.png"></td>
+         <td><img width="32" src="https://github.com/traefik/traefik/raw/master/docs/content/assets/img/traefik.logo-dark.png"></td>
          <td><a href="https://traefik.io/traefik">Traefik</a></td>
          <td>Ingress controller & reverse proxy (TLSStore + Kubernetes secret-based TLS)</td>
      </tr>
@@ -103,7 +103,7 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
         <td>Infrastructure as Code for cloud resources</td>
     </tr>
     <tr>
-         <td><img width="32" src="https://avatars.githubusercontent.com/u/14336958?s=200&v=4"></td>
+         <td><img width="32" src="https://github.com/jetstack/cert-manager/raw/master/logo/logo.png"></td>
          <td><a href="https://jetstack.io/cert-manager">cert-manager</a></td>
          <td>Automated certificate management (Let's Encrypt DNS-01 via Cloudflare)</td>
      </tr>
@@ -113,7 +113,7 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
         <td>Secrets encryption at rest</td>
     </tr>
     <tr>
-        <td><img width="32" src="https://jj-vcs.dev/assets/logo.svg"></td>
+        <td><img width="32" src="https://www.jj-vcs.dev/latest/images/jj-logo.svg"> + <img width="32" src="https://git-scm.com/images/logo@2x.png"></td>
         <td><a href="https://jj-vcs.dev">jj + Git</a></td>
         <td>Version control with colocated .git directory</td>
     </tr>
@@ -123,7 +123,7 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
         <td>Web Client for Internet Relay Chat</td>
     </tr>
     <tr>
-        <td><img width="32" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Kvmbanner-logo2_1.png/960px-Kvmbanner-logo2_1.png?20131022114630"></td>
+        <td><img width="32" src="https://cdn-icons-png.flaticon.com/512/7779/7779541.png"></td>
         <td><a href="https://racknerd.com">Infrastructure </a></td>
         <td>6 GB RAM, 5 vCPU, 100 GB NVMe SSD</td>
     </tr>
