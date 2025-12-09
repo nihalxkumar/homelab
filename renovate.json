@@ -1,0 +1,265 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",
+    "schedule:weekly"
+  ],
+  "timezone": "UTC",
+  "schedule": [
+    "before 3am on Monday"
+  ],
+  "semanticCommits": true,
+  "commitMessagePrefix": "chore(deps):",
+  "commitMessageAction": "update",
+  "commitMessageTopic": "{{{depName}}}",
+  "commitMessageExtra": "to {{newVersion}}",
+  "labels": [
+    "dependencies",
+    "renovate"
+  ],
+  "assignees": [
+    "@neo"
+  ],
+  "reviewers": [
+    "@neo"
+  ],
+  "ignoreDeps": [],
+  "ignorePaths": [
+    "**/node_modules/**",
+    ".git/**",
+    ".jj/**"
+  ],
+  "prConcurrentLimit": 3,
+  "prCreation": "not-pending",
+  "enableVulnerabilityAlerts": true,
+  "stabilityDays": 3,
+  "internalChecksFilter": "strict",
+  "postUpdateOptions": [
+    "gomodTidy",
+    "npmDedupe",
+    "yarnDedupeHighest"
+  ],
+  "gitAuthor": "renovate[bot] <renovate@renovatebot.com>",
+  "gitIgnoredAuthors": [
+    "renovate[bot]"
+  ],
+  "packageRules": [
+    {
+      "description": "Kubernetes image updates - patch only, auto-merge minor",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash",
+      "minimumReleaseAge": "7 days"
+    },
+    {
+      "description": "Kubernetes image minor updates",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchUpdateTypes": [
+        "minor"
+      ],
+      "extends": [
+        "schedule:weekly"
+      ],
+      "minimumReleaseAge": "14 days"
+    },
+    {
+      "description": "Kubernetes image major updates",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "schedule": [
+        "before 3am on the first Monday of the month"
+      ],
+      "minimumReleaseAge": "30 days",
+      "labels": [
+        "breaking-change",
+        "requires-review"
+      ]
+    },
+    {
+      "description": "Ansible role updates - auto-merge patch",
+      "matchDatasources": [
+        "galaxy"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash",
+      "minimumReleaseAge": "7 days"
+    },
+    {
+      "description": "Terraform provider patch updates - auto-merge",
+      "matchDatasources": [
+        "terraform-provider"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash",
+      "minimumReleaseAge": "7 days"
+    },
+    {
+      "description": "Terraform provider minor updates - weekly",
+      "matchDatasources": [
+        "terraform-provider"
+      ],
+      "matchUpdateTypes": [
+        "minor"
+      ],
+      "schedule": [
+        "before 3am on Monday"
+      ],
+      "minimumReleaseAge": "14 days"
+    },
+    {
+      "description": "Terraform provider major updates - monthly",
+      "matchDatasources": [
+        "terraform-provider"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "schedule": [
+        "before 3am on the first Monday of the month"
+      ],
+      "minimumReleaseAge": "30 days",
+      "labels": [
+        "breaking-change",
+        "requires-review"
+      ]
+    },
+    {
+      "description": "Python package patch updates - auto-merge",
+      "matchDatasources": [
+        "pip",
+        "pypi"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash",
+      "minimumReleaseAge": "7 days"
+    },
+    {
+      "description": "Python package minor updates - weekly",
+      "matchDatasources": [
+        "pip",
+        "pypi"
+      ],
+      "matchUpdateTypes": [
+        "minor"
+      ],
+      "schedule": [
+        "before 3am on Monday"
+      ],
+      "minimumReleaseAge": "14 days"
+    },
+    {
+      "description": "Python package major updates - monthly",
+      "matchDatasources": [
+        "pip",
+        "pypi"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "schedule": [
+        "before 3am on the first Monday of the month"
+      ],
+      "minimumReleaseAge": "30 days",
+      "labels": [
+        "breaking-change",
+        "requires-review"
+      ]
+    },
+    {
+      "description": "SOPS and security tools - patch auto-merge",
+      "matchPackagePatterns": [
+        "^sops$",
+        "ansible-lint",
+        "detect-secrets",
+        "yamllint"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash"
+    },
+    {
+      "description": "CI/CD tool updates - weekly schedule",
+      "matchPackagePatterns": [
+        "^ansible$",
+        "^kustomize$",
+        "^kubeval$"
+      ],
+      "schedule": [
+        "before 3am on Monday"
+      ],
+      "minimumReleaseAge": "7 days"
+    },
+    {
+      "description": "Group minor and patch updates together",
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "non-major updates",
+      "groupSlug": "non-major"
+    },
+    {
+      "description": "Group Python development dependencies",
+      "matchDatasources": [
+        "pip",
+        "pypi"
+      ],
+      "matchDepTypes": [
+        "dev-dependencies"
+      ],
+      "groupName": "Python dev dependencies",
+      "schedule": [
+        "before 3am on Monday"
+      ]
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "labels": [
+      "security",
+      "vulnerability"
+    ],
+    "assignees": [
+      "@neo"
+    ],
+    "reviewers": [
+      "@neo"
+    ]
+  },
+  "configMigration": true,
+  "dryRun": false,
+  "onboarding": true,
+  "onboardingConfigFileName": "renovate.json",
+  "prBodyColumns": [
+    "Package",
+    "Type",
+    "Update",
+    "Change"
+  ]
+}
