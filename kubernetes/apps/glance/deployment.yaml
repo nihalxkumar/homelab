@@ -64,6 +64,11 @@ spec:
           env:
             - name: TZ
               value: "UTC"
+            - name: LASTFM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: glance-secrets
+                  key: LASTFM_API_KEY
       volumes:
         - name: config
           persistentVolumeClaim:
