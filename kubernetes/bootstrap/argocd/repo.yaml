@@ -23,6 +23,7 @@ spec:
     - 'https://gitlab.com/nihalxkumar/homelab-infra.git'
     - 'https://helm.traefik.io/traefik'
     - 'https://charts.jetstack.io'
+    - 'https://stakater.github.io/stakater-charts'
   destinations:
     - namespace: '*'
       server: 'https://kubernetes.default.svc'

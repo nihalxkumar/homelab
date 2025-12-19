@@ -14,12 +14,17 @@ spec:
     metadata:
       labels:
         app: glance
+      annotations:
+        # Reloader: Automatically restart pods when ConfigMaps/Secrets change
+        # Watches all ConfigMaps/Secrets referenced by this pod
+        reloader.stakater.com/auto: "true"
     spec:
       securityContext:
         runAsUser: 1000
         runAsNonRoot: true
         fsGroup: 1000
-      # Init container to copy config files from ConfigMap to PVC on first startup
+      # Init container to copy config files from ConfigMap to PVC
+      # Always copies to ensure ConfigMap updates are applied
       initContainers:
         - name: init-config
           image: busybox:latest
@@ -28,15 +33,11 @@ spec:
             - |
               # Debug: Log init container startup
               echo "Initializing Glance config files..."
-              # Copy config files if they don't exist
-              if [ ! -f /app/config/glance.yml ]; then
-                echo "Copying glance.yml..."
-                cp /config/glance.yml /app/config/glance.yml
-              fi
-              if [ ! -f /app/config/home.yml ]; then
-                echo "Copying home.yml..."
-                cp /config/home.yml /app/config/home.yml
-              fi
+              # Always copy config files to ensure ConfigMap updates are applied
+              echo "Copying glance.yml..."
+              cp /config/glance.yml /app/config/glance.yml
+              echo "Copying home.yml..."
+              cp /config/home.yml /app/config/home.yml
               echo "Config initialization complete"
           volumeMounts:
             - name: config

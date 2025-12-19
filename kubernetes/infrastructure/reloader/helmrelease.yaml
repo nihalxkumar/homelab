@@ -1,0 +1,63 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: reloader
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: homelab
+  source:
+    repoURL: https://stakater.github.io/stakater-charts
+    chart: reloader
+    targetRevision: "v1.4.12"
+    helm:
+      releaseName: reloader
+      values: |
+        # Reloader watches ConfigMaps and Secrets and restarts pods automatically
+        # Production-ready GitOps solution for ConfigMap/Secret updates
+        reloader:
+          # Watch all namespaces by default (set to false to watch only reloader namespace)
+          watchGlobally: true
+          
+          # Auto-reload when ConfigMaps/Secrets change (if true, reloads all pods)
+          autoReloadAll: false
+          
+          # Log level: debug, info, warn, error
+          logLevel: info
+          
+          # Ignore namespaces (system namespaces)
+          ignoreNamespaces: "kube-system,kube-public,kube-node-lease,argocd"
+          
+          # Deployment configuration
+          deployment:
+            replicas: 1
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 65534
+              seccompProfile:
+                type: RuntimeDefault
+            resources:
+              limits:
+                cpu: 100m
+                memory: 128Mi
+              requests:
+                cpu: 10m
+                memory: 64Mi
+        
+        # RBAC enabled for cluster-wide watching
+        rbac:
+          enabled: true
+        
+        # Service account
+        serviceAccount:
+          create: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: reloader
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
