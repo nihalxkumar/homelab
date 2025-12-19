@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: apps
+  namespace: argocd
+spec:
+  generators:
+    # List generator: explicitly list all apps
+    - list:
+        elements:
+          - app: thelounge
+            path: kubernetes/apps/thelounge
+          - app: glance
+            path: kubernetes/apps/glance
+  template:
+    metadata:
+      name: '{{app}}'
+      namespace: argocd
+    spec:
+      project: default
+      source:
+        repoURL: https://gitlab.com/nihalxkumar/homelab-infra.git
+        targetRevision: main
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{app}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

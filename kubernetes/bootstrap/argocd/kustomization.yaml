@@ -8,6 +8,7 @@ resources:
    - repo.yaml
    - root-app.yaml
    - app.yaml
+   - apps-app.yaml
 
 configMapGenerator:
   - name: argocd-cmd-params-cm
