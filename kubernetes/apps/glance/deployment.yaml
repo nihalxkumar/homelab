@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: glance
+  namespace: glance
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: glance
+  template:
+    metadata:
+      labels:
+        app: glance
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsNonRoot: true
+        fsGroup: 1000
+      # Init container to copy config files from ConfigMap to PVC on first startup
+      initContainers:
+        - name: init-config
+          image: busybox:latest
+          command: ['sh', '-c']
+          args:
+            - |
+              # Debug: Log init container startup
+              echo "Initializing Glance config files..."
+              # Copy config files if they don't exist
+              if [ ! -f /app/config/glance.yml ]; then
+                echo "Copying glance.yml..."
+                cp /config/glance.yml /app/config/glance.yml
+              fi
+              if [ ! -f /app/config/home.yml ]; then
+                echo "Copying home.yml..."
+                cp /config/home.yml /app/config/home.yml
+              fi
+              echo "Config initialization complete"
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+            - name: configmap-config
+              mountPath: /config
+      containers:
+        - name: glance
+          image: glanceapp/glance:latest
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+            - name: assets
+              mountPath: /app/assets
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          # Debug: Log container startup
+          env:
+            - name: TZ
+              value: "UTC"
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: glance-config
+        - name: assets
+          emptyDir: {}
+        - name: configmap-config
+          configMap:
+            name: glance-config
