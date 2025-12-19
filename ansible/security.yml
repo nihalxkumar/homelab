@@ -100,7 +100,16 @@
         state: present
       notify: Restart SSH
 
-  handlers:
+    # --- Sudoers Configuration ---
+    - name: Sudoers | Allow arjun passwordless sudo
+     lineinfile:
+       path: /etc/sudoers.d/arjun
+       line: "arjun ALL=(ALL) NOPASSWD:ALL"
+       create: yes
+       mode: '0440'
+       validate: /usr/sbin/visudo -cf %s
+
+    handlers:
     - name: Restart SSH
       service:
         name: ssh

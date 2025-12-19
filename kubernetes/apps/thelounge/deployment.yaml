@@ -15,6 +15,10 @@ spec:
       labels:
         app: thelounge
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsNonRoot: true
+        fsGroup: 1000
       containers:
         - name: thelounge
           image: thelounge/thelounge:4

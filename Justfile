@@ -14,7 +14,11 @@ provision:
 
 # Run a specific playbook (usage: just run-playbook security.yml)
 run-playbook playbook:
-    cd ansible && ansible-playbook -i inventory/hosts.ini {{playbook}} -K
+    cd ansible && ansible-playbook -i inventory/hosts.ini {{playbook}}
+
+# Configure DNS and Cloudflare Tunnel for hybrid setup
+setup-dns:
+    cd ansible && ansible-playbook -i inventory/hosts.ini dns-tunnel.yml -K
 
 # --- Kubernetes (K8s) ---
 
@@ -31,6 +35,12 @@ verify-cert:
 
 logs-cert:
     export KUBECONFIG=~/.kube/config-vps && kubectl logs -n cert-manager -l app=cert-manager -f
+
+tunnel-status:
+    ssh arjun@100.84.231.21 "systemctl status cloudflared && echo '---' && cloudflared tunnel list"
+
+tunnel-logs:
+    ssh arjun@100.84.231.21 "journalctl -u cloudflared -n 100 -f"
 
 # --- Security (SOPS) ---
 

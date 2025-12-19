@@ -33,3 +33,23 @@
       register: tailscale_start
       changed_when: "'Success' in tailscale_start.stdout"
       ignore_errors: yes # Ignores error if already logged in
+
+    - name: Configure Tailscale MagicDNS and split DNS
+      command: |
+        tailscale set \
+          --accept-dns=true \
+          --advertise-tags=tag:homelab
+      become: no
+      register: tailscale_dns_config
+      changed_when: "'Configuration changed' in tailscale_dns_config.stdout or tailscale_dns_config.rc == 0"
+      ignore_errors: yes
+
+    - name: Display Tailscale status
+      command: tailscale status
+      become: no
+      register: tailscale_status
+      changed_when: false
+
+    - name: Show Tailscale connection info
+      debug:
+        msg: "{{ tailscale_status.stdout_lines[-3:] }}"
