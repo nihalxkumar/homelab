@@ -1,0 +1,133 @@
+---
+- name: Configure DNS and Cloudflare Tunnel
+  hosts: vps
+  become: true
+  gather_facts: yes
+  
+  vars:
+    tailscale_auth_key: "{{ tailscale_auth_key }}"
+    cloudflare_tunnel_token: "{{ cloudflare_tunnel_token }}"
+    domains:
+      - nihalxkumar.dev
+      - "*.nihalxkumar.dev"
+      - argocd.nihalxkumar.dev
+      - irc.nihalxkumar.dev
+      - maya.nihalxkumar.dev
+
+  tasks:
+    # ============================================================================
+    # PART 1: Tailscale MagicDNS Setup - for internal Tailscale network access
+    # ============================================================================
+    - name: Enable Tailscale MagicDNS on VPS
+      command: tailscale set --advertise-tags=tag:homelab
+      become: no
+      register: tailscale_magic_dns
+      ignore_errors: yes
+
+    - name: Get Tailscale DNS settings
+      command: tailscale status
+      become: no
+      register: tailscale_dns_status
+      changed_when: false
+
+    - name: Display Tailscale DNS status
+      debug:
+        msg: "{{ tailscale_dns_status.stdout }}"
+
+    # ============================================================================
+    # PART 2: Cloudflare Tunnel Setup - for public internet access
+    # ============================================================================
+    
+    # The tunnel daemon (cloudflared) should already be running from system setup.
+    # We configure it to route traffic for our domains to the local Traefik.
+    
+    - name: Create cloudflared config directory
+      file:
+        path: /etc/cloudflared
+        state: directory
+        mode: '0755'
+
+    - name: Create Cloudflare Tunnel config
+      template:
+        src: cloudflare-tunnel-config.j2
+        dest: /etc/cloudflared/config.yml
+        owner: root
+        group: root
+        mode: '0644'
+      register: tunnel_config
+
+    - name: Validate cloudflared config
+      command: cloudflared tunnel ingress validate --config /etc/cloudflared/config.yml
+      become: no
+      changed_when: false
+
+    - name: Restart cloudflared service
+      systemd:
+        name: cloudflared
+        state: restarted
+        daemon_reload: yes
+      when: tunnel_config.changed
+
+    - name: Verify cloudflared is running
+      systemd:
+        name: cloudflared
+        state: started
+        enabled: yes
+
+    # ============================================================================
+    # PART 3: DNS Zone Configuration (Manual step reminder)
+    # ============================================================================
+    
+    - name: Display DNS configuration instructions
+      debug:
+        msg: |
+          ✅ Tailscale MagicDNS: Enabled for internal network access
+          ✅ Cloudflare Tunnel: Configured to route domains to Traefik
+          
+          📋 DNS Configuration Options:
+          
+          OPTION 1: Automatic DNS (Recommended for named tunnels)
+          1. Go to https://dash.cloudflare.com → Zero Trust → Networks → Tunnels
+          2. Click on tunnel "maya"
+          3. Go to "Public Hostname" tab
+          4. Add public hostname for each domain:
+             - Subdomain: maya (for maya.nihalxkumar.dev)
+             - Domain: nihalxkumar.dev
+             - Service: https://localhost:443
+             - Click "Save hostname"
+          5. Cloudflare will automatically create the DNS records
+          
+          OPTION 2: Manual DNS (if automatic doesn't work)
+          1. Find tunnel ID by running: ssh arjun@100.84.231.21 'cloudflared tunnel list'
+          2. Go to https://dash.cloudflare.com → DNS → Records
+          3. For each domain, create CNAME:
+             - Type: CNAME
+             - Name: maya (or subdomain name)
+             - Target: <tunnel-id>.cfargotunnel.com (use the ID from step 1)
+             - Proxy status: Proxied (orange cloud)
+          
+          Domains to configure:
+          {% for domain in domains %}
+            - {{ domain }}
+          {% endfor %}
+          
+          3. In Cloudflare Tunnel settings:
+             - Verify the tunnel is "Connected"
+             - Confirm all routes are active
+          
+          4. Test from phone:
+             - On Tailscale network: `ping irc.nihalxkumar.dev` 
+             - From public internet: Visit https://irc.nihalxkumar.dev in browser
+             
+          ⚠️  If DNS fails on phone:
+             - Check Tailscale admin console → DNS settings
+             - Verify MagicDNS is enabled for your account
+             - Confirm domains are in "DNS Settings" section
+
+    - name: Output tunnel status command
+      debug:
+        msg: |
+          To check tunnel status, run:
+            ssh arjun@100.84.231.21 'systemctl status cloudflared'
+            ssh arjun@100.84.231.21 'cloudflared tunnel list'
+            ssh arjun@100.84.231.21 'cloudflared tunnel route list'

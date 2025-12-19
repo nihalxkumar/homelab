@@ -1,0 +1,51 @@
+# Cloudflare Tunnel configuration for homelab
+# This routes traffic from Cloudflare edge to local Traefik ingress
+
+tunnel: maya
+credentials-file: /home/arjun/.cloudflared/025cdb47-1307-499a-8ffe-527851faecb8.json
+accountTag: {{ cloudflare_account_id | default('your-account-id') }}
+
+# DNS configuration - advertise these domains via Cloudflare
+ingress:
+  # Main homelab services
+  - hostname: argocd.nihalxkumar.dev
+    service: https://localhost:443
+    originRequest:
+      http2Origin: true
+      originServerName: argocd.nihalxkumar.dev
+
+  - hostname: irc.nihalxkumar.dev
+    service: https://localhost:443
+    originRequest:
+      http2Origin: true
+      originServerName: irc.nihalxkumar.dev
+
+  - hostname: maya.nihalxkumar.dev
+    service: https://localhost:443
+    originRequest:
+      http2Origin: true
+      originServerName: maya.nihalxkumar.dev
+
+  # Wildcard catch-all for other subdomains
+  - hostname: "*.nihalxkumar.dev"
+    service: https://localhost:443
+    originRequest:
+      http2Origin: true
+
+  # Root domain
+  - hostname: nihalxkumar.dev
+    service: https://localhost:443
+    originRequest:
+      http2Origin: true
+      originServerName: nihalxkumar.dev
+
+  # Default service - reject unmatched traffic
+  - service: http_status:404
+
+# TLS/Security settings
+tlsConfig:
+  caCert: /etc/ssl/certs/ca-certificates.crt
+
+# Log settings
+logLevel: info
+logFile: /var/log/cloudflared/tunnel.log
