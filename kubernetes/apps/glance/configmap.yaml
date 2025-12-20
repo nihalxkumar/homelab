@@ -80,3 +80,19 @@ data:
               url: https://uselessfacts.jsph.pl/api/v2/facts/random
               template: |
                 <p class="size-h4 color-paragraph">{{ .JSON.String "text" }}</p>
+
+            - type: extension
+              title: Kubernetes Nodes
+              url: http://glance-k8s/extension/nodes
+              allow-potentially-dangerous-html: true
+              cache: 1s
+
+            - type: extension
+              title: Kubernetes Apps
+              url: http://glance-k8s/extension/apps
+              allow-potentially-dangerous-html: true
+              cache: 1s
+              parameters:
+                show-if: |
+                  namespace != "kube-system" and
+                  ("glance/hide" not in annotations || annotations["glance/hide"] != "true")
