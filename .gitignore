@@ -9,6 +9,7 @@ ansible/*kubeconfig*.yaml
 *.kubeconfig
 AGENT.md
 docs/
+.windsurf/
 .worktrees/
 # CI/CD artifacts
 terraform/tfplan
