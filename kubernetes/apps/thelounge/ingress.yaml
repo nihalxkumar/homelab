@@ -3,6 +3,8 @@ kind: IngressRoute
 metadata:
   name: thelounge
   namespace: thelounge
+  annotations:
+    glance/url: https://ircs.nihalxkumar.dev
 spec:
   entryPoints:
     - websecure

@@ -3,6 +3,8 @@ kind: IngressRoute
 metadata:
   name: glance
   namespace: glance
+  annotations:
+    glance/url: https://maya.nihalxkumar.dev
 spec:
   entryPoints:
     - websecure
