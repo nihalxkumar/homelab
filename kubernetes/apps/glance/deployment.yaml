@@ -33,11 +33,11 @@ spec:
             - |
               # Debug: Log init container startup
               echo "Initializing Glance config files..."
-              # Always copy config files to ensure ConfigMap updates are applied
+              # Always overwrite config files to ensure ConfigMap updates are applied
               echo "Copying glance.yml..."
-              cp /config/glance.yml /app/config/glance.yml
+              cp -f /config/glance.yml /app/config/glance.yml
               echo "Copying home.yml..."
-              cp /config/home.yml /app/config/home.yml
+              cp -f /config/home.yml /app/config/home.yml
               echo "Config initialization complete"
           volumeMounts:
             - name: config
