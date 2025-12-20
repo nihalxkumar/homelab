@@ -10,6 +10,10 @@ resources:
    - app.yaml
    - apps-app.yaml
 
+patchesStrategicMerge:
+  - argocd-cm-ksops-patch.yaml
+  - argocd-repo-server-ksops-patch.yaml
+
 configMapGenerator:
   - name: argocd-cmd-params-cm
     behavior: merge
