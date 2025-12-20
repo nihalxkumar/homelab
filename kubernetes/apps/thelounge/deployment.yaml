@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: thelounge
   namespace: thelounge
+  annotations:
+    glance/url: https://irc.nihalxkumar.dev
 spec:
   replicas: 1
   strategy:
