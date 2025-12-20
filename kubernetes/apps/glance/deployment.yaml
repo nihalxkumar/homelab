@@ -70,6 +70,7 @@ spec:
                 secretKeyRef:
                   name: glance-secrets
                   key: LASTFM_API_KEY
+                  optional: true
       volumes:
         - name: config
           persistentVolumeClaim:
