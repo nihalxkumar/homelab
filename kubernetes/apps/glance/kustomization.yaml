@@ -4,6 +4,10 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - configmap.yaml
+  - glance-k8s-serviceaccount.yaml
+  - glance-k8s-rbac.yaml
+  - glance-k8s-deployment.yaml
+  - glance-k8s-service.yaml
   - pvc.yaml
   - deployment.yaml
   - service.yaml
