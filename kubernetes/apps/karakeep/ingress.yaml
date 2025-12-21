@@ -10,7 +10,7 @@ spec:
     - match: Host(`karakeep.nihalxkumar.dev`)
       kind: Rule
       middlewares:
-        - name: traefik-tailscale-only@kubernetescrd
+        - name: tailscale-only
       services:
         - name: karakeep
           port: 80
