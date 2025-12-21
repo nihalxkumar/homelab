@@ -5,7 +5,7 @@ metadata:
   namespace: traefik
   annotations:
     glance/url: https://argocd.nihalxkumar.dev
-    glance/icon: si:argocd
+    glance/icon: di:argocd
 spec:
   entryPoints:
     - websecure
