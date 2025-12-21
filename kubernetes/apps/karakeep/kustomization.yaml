@@ -6,7 +6,6 @@ metadata:
 
 resources:
   - namespace.yaml
-  - secret.sops.yaml
   - configmap.yaml
   - pvc.yaml
   - meilisearch.yaml
@@ -14,3 +13,6 @@ resources:
   - deployment.yaml
   - service.yaml
   - ingress.yaml
+
+generators:
+  - secret-generator.yaml
