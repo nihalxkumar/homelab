@@ -4,7 +4,7 @@ metadata:
   name: thelounge
   namespace: thelounge
   annotations:
-    glance/url: https://ircs.nihalxkumar.dev
+    glance/url: https://irc.nihalxkumar.dev
 spec:
   entryPoints:
     - websecure
