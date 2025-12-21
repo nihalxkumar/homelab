@@ -3,6 +3,9 @@ kind: Deployment
 metadata:
   name: karakeep
   namespace: karakeep
+  annotations:
+    glance/url: https://karakeep.nihalxkumar.dev
+    glance/icon: si:hoarder
 spec:
   replicas: 1
   strategy:
