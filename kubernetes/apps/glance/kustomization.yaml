@@ -2,16 +2,17 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - namespace.yaml
-  - configmap.yaml
-  - glance-k8s-serviceaccount.yaml
-  - glance-k8s-rbac.yaml
-  - glance-k8s-deployment.yaml
-  - glance-k8s-service.yaml
-  - pvc.yaml
-  - deployment.yaml
-  - service.yaml
-  - ingress.yaml
+   - namespace.yaml
+   - configmap.yaml
+   - glance-k8s-serviceaccount.yaml
+   - glance-k8s-rbac.yaml
+   - glance-k8s-deployment.yaml
+   - glance-k8s-service.yaml
+   - pvc.yaml
+   - deployment.yaml
+   - service.yaml
+   - ingress.yaml
+   - certificate.yaml
 
 generators:
-  - secret-generator.yaml
+   - secret-generator.yaml
