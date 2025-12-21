@@ -3,6 +3,8 @@ kind: IngressRoute
 metadata:
   name: argocd-server
   namespace: traefik
+  annotations:
+    glance/url: https://argocd.nihalxkumar.dev
 spec:
   entryPoints:
     - websecure
