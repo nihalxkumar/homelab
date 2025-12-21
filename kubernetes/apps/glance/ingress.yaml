@@ -5,6 +5,7 @@ metadata:
   namespace: glance
   annotations:
     glance/url: https://maya.nihalxkumar.dev
+    glance/icon: di:glance
 spec:
   entryPoints:
     - websecure
