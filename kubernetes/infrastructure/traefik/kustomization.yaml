@@ -7,3 +7,4 @@ resources:
    - helmrelease.yaml
    - tlsstore.yaml
    - ingress-argocd.yaml
+   - certificate.yaml

@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: nihalxkumar-dev
+  namespace: traefik
+spec:
+  secretName: nihalxkumar-dev-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - nihalxkumar.dev
+    - "*.nihalxkumar.dev"
+    - argocd.nihalxkumar.dev
+    - irc.nihalxkumar.dev
+    - maya.nihalxkumar.dev
+
