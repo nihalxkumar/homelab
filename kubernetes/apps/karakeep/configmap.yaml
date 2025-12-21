@@ -11,8 +11,8 @@ data:
   DATA_DIR: "/data"
   LOG_LEVEL: "info"
   # Automatic Tagging
-  INFERENCE_TEXT_MODEL: "gemini-1.5-flash"
-  INFERENCE_IMAGE_MODEL: "gemini-1.5-flash"
+  INFERENCE_TEXT_MODEL: "gemini-2.5-flash"
+  INFERENCE_IMAGE_MODEL: "gemini-2.5-flash"
   INFERENCE_ENABLE_AUTO_TAGGING: "true"
   # Browser for crawling
   BROWSER_WEB_URL: "http://karakeep-chrome:9222"
