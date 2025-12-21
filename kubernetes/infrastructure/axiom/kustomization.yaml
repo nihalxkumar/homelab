@@ -4,6 +4,8 @@ namespace: axiom
 resources:
 - namespace.yaml
 - rbac.yaml
-- secret.sops.yaml
 - fluent-bit-config.yaml
 - fluent-bit-daemonset.yaml
+
+generators:
+  - secret-generator.yaml
