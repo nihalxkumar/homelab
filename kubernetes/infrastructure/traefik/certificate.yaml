@@ -11,7 +11,4 @@ spec:
   dnsNames:
     - nihalxkumar.dev
     - "*.nihalxkumar.dev"
-    - argocd.nihalxkumar.dev
-    - irc.nihalxkumar.dev
-    - maya.nihalxkumar.dev
 
