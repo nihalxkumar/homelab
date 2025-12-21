@@ -12,6 +12,8 @@ spec:
   routes:
     - match: Host(`irc.nihalxkumar.dev`)
       kind: Rule
+      middlewares:
+        - name: traefik-tailscale-only@kubernetescrd
       services:
         - name: thelounge
           port: 9000

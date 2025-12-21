@@ -4,6 +4,7 @@ metadata:
   name: traefik
 
 resources:
+  - middleware-tailscale.yaml
    - helmrelease.yaml
    - tlsstore.yaml
    - ingress-argocd.yaml
