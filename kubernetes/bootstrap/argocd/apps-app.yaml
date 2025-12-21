@@ -12,6 +12,8 @@ spec:
             path: kubernetes/apps/thelounge
           - app: glance
             path: kubernetes/apps/glance
+          - app: karakeep
+            path: kubernetes/apps/karakeep
   template:
     metadata:
       name: '{{app}}'

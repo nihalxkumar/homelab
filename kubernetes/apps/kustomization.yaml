@@ -4,5 +4,6 @@ metadata:
   name: apps
 
 resources:
+  - karakeep/
   - thelounge/
   - glance/
