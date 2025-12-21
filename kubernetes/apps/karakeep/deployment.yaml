@@ -5,7 +5,7 @@ metadata:
   namespace: karakeep
   annotations:
     glance/url: https://karakeep.nihalxkumar.dev
-    glance/icon: si:hoarder
+    glance/icon: si:gitbook
 spec:
   replicas: 1
   strategy:
