@@ -13,7 +13,7 @@ spec:
     - match: Host(`irc.nihalxkumar.dev`)
       kind: Rule
       middlewares:
-        - name: traefik-tailscale-only@kubernetescrd
+        - name: tailscale-only
       services:
         - name: thelounge
           port: 9000
