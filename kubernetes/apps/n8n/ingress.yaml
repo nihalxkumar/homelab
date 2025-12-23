@@ -10,11 +10,10 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`n8n.nihalxkumar.dev`)
+    - match: Host(`n8n.nihalxkumar.dev`) && PathPrefix(`/`)
       kind: Rule
       middlewares:
         - name: tailscale-only
-          namespace: traefik
       services:
         - name: n8n
           port: 5678
