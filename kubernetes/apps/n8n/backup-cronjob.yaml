@@ -1,0 +1,95 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: n8n-backup
+  namespace: n8n
+  labels:
+    app: n8n
+    component: backup
+spec:
+  schedule: "0 2 * * *"
+  successfulJobsHistoryLimit: 7
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
+  
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: n8n
+            component: backup
+        spec:
+          serviceAccountName: n8n
+          restartPolicy: OnFailure
+          
+          containers:
+            - name: backup
+              image: alpine:3.19
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -e
+                  echo "Starting n8n backup at $(date)"
+                  
+                  BACKUP_DIR="/backups/n8n-$(date +%Y%m%d-%H%M%S)"
+                  mkdir -p "$BACKUP_DIR"
+                  
+                  echo "Copying n8n data..."
+                  cp -r /data/* "$BACKUP_DIR/" || {
+                    echo "Error: Failed to copy data"
+                    exit 1
+                  }
+                  
+                  echo "Creating compressed archive..."
+                  cd /backups
+                  tar czf "$(basename $BACKUP_DIR).tar.gz" "$(basename $BACKUP_DIR)"
+                  rm -rf "$BACKUP_DIR"
+                  
+                  echo "Cleaning old backups..."
+                  find /backups -name "n8n-*.tar.gz" -type f -mtime +30 -delete
+                  
+                  echo "Backup completed successfully at $(date)"
+                  echo "Backup size: $(du -h /backups/n8n-*.tar.gz | tail -1)"
+                  echo "Total backups: $(ls -1 /backups/n8n-*.tar.gz | wc -l)"
+              
+              volumeMounts:
+                - name: n8n-data
+                  mountPath: /data
+                  readOnly: true
+                - name: backups
+                  mountPath: /backups
+              
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 200m
+                  memory: 256Mi
+          
+          volumes:
+            - name: n8n-data
+              persistentVolumeClaim:
+                claimName: n8n-data
+            - name: backups
+              persistentVolumeClaim:
+                claimName: n8n-backups
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: n8n-backups
+  namespace: n8n
+  labels:
+    app: n8n
+    component: backup
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
