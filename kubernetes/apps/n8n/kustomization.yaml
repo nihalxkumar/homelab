@@ -9,14 +9,15 @@ resources:
   - serviceaccount.yaml
   - pvc.yaml
   - configmap.yaml
-  - secret.sops.yaml
   - deployment.yaml
   - service.yaml
   - ingress.yaml
   - certificate.yaml
   - networkpolicy.yaml
-  - podmonitor.yaml
   - backup-cronjob.yaml
+
+generators:
+  - secret-generator.yaml
 
 commonLabels:
   app.kubernetes.io/name: n8n
