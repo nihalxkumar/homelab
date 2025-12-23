@@ -7,6 +7,9 @@ metadata:
   labels:
     app: n8n
     version: v1
+  annotations:
+    glance/url: https://n8n.nihalxkumar.dev
+    glance/icon: si:n8n
 spec:
   replicas: 1
   strategy:
