@@ -1,0 +1,14 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: tailscale-only
+  namespace: n8n
+spec:
+  ipAllowList:
+    sourceRange:
+      - 100.64.0.0/10   # Tailscale range
+      - 127.0.0.1/32    # Localhost
+      - 10.42.0.0/16    # Pod CIDR (internal cluster traffic)
+      - 10.43.0.0/16    # Service CIDR
+
