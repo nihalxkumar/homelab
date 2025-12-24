@@ -15,7 +15,6 @@ data:
   N8N_PROTOCOL: "https"
   WEBHOOK_URL: "https://n8n.nihalxkumar.dev"
   N8N_EDITOR_BASE_URL: "https://n8n.nihalxkumar.dev"
-  N8N_PATH: "/"
   
   EXECUTIONS_MODE: "regular"
   EXECUTIONS_PROCESS: "main"
