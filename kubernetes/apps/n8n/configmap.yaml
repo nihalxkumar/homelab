@@ -28,7 +28,7 @@ data:
   N8N_SECURE_COOKIE: "true"
   N8N_SKIP_WEBHOOK_DEREGISTRATION_SHUTDOWN: "true"
   
-  N8N_LOG_LEVEL: "info"
+  N8N_LOG_LEVEL: "debug"
   N8N_LOG_OUTPUT: "console"
   N8N_PAYLOAD_SIZE_MAX: "16"
   
