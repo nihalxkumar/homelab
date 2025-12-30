@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: nihalxkumar-dev
+  namespace: deepwiki-open
+spec:
+  secretName: nihalxkumar-dev-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - deepwiki.nihalxkumar.dev
