@@ -3,9 +3,8 @@ kind: ConfigMap
 metadata:
   name: deepwiki-config
 data:
-  PORT: "8001"
   NODE_ENV: "production"
-  SERVER_BASE_URL: "http://localhost:8001"
+  SERVER_BASE_URL: "https://deepwiki.nihalxkumar.dev"
   LOG_LEVEL: "INFO"
   LOG_FILE_PATH: "api/logs/application.log"
   DEEPWIKI_EMBEDDER_TYPE: "google"
