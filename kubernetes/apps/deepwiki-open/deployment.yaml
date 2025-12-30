@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deepwiki
+  labels:
+    app: deepwiki
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: deepwiki
+  template:
+    metadata:
+      labels:
+        app: deepwiki
+    spec:
+      securityContext:
+        fsGroup: 0 # Root user required? Image seems to run as root by default from docker-compose volume mapping /root
+      containers:
+      - name: deepwiki
+        image: ghcr.io/asyncfuncai/deepwiki-open:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: ui
+          containerPort: 3000
+          protocol: TCP
+        - name: api
+          containerPort: 8001
+          protocol: TCP
+        
+        envFrom:
+        - configMapRef:
+            name: deepwiki-config
+        - secretRef:
+            name: deepwiki-secret
+        
+        volumeMounts:
+        - name: data
+          mountPath: /root/.adalflow # Mapped from docker-compose.yml
+        
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+        
+        # Health check from docker-compose
+        livenessProbe:
+          exec:
+            command:
+            - curl
+            - -f
+            - http://localhost:8001/health
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          timeoutSeconds: 10
+          failureThreshold: 3
+          
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: deepwiki-data
