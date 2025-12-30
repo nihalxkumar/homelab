@@ -1,0 +1,19 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: deepwiki
+  labels:
+    app: deepwiki
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`deepwiki.nihalxkumar.dev`) && PathPrefix(`/`)
+      kind: Rule
+      middlewares:
+        - name: tailscale-only
+      services:
+        - name: deepwiki
+          port: 3000
+  tls:
+    secretName: nihalxkumar-dev-tls
