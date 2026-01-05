@@ -5,7 +5,7 @@ metadata:
   namespace: karakeep
 data:
   NEXTAUTH_URL: "https://karakeep.nihalxkumar.dev"
-  OPENAI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta"
+  OPENAI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta/openai/"
   MEILI_ADDR: "http://karakeep-meilisearch:7700"
   REDIS_URL: "redis://karakeep-redis:6379"
   DATA_DIR: "/data"
