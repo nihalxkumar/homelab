@@ -9,7 +9,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`nihalxkumar.dev`) && PathPrefix(`/`)
+    - match: Host(`nihalxkumar.dev`) || Host(`www.nihalxkumar.dev`) && PathPrefix(`/`)
       kind: Rule
       services:
         - name: landing
