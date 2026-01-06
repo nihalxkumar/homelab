@@ -3,7 +3,6 @@
 .DS_Store
 .env
 ansible/.vault_pass
-# Kubernetes config files containing credentials
 ansible/k3s-*.yaml
 ansible/*kubeconfig*.yaml
 *.kubeconfig
@@ -11,7 +10,7 @@ AGENT.md
 docs/
 .windsurf/
 .worktrees/
-# CI/CD artifacts
 terraform/tfplan
 /tmp/
 .cache/
+kubernetes/apps/deepwiki-open/generated/
