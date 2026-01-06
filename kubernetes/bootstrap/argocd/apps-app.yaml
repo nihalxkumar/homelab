@@ -17,6 +17,8 @@ spec:
             path: kubernetes/apps/n8n
           - app: deepwiki-open
             path: kubernetes/apps/deepwiki-open
+          - app: landing
+            path: kubernetes/apps/landing
   template:
     metadata:
       name: '{{app}}'
