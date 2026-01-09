@@ -6,7 +6,7 @@ ansible/.vault_pass
 ansible/k3s-*.yaml
 ansible/*kubeconfig*.yaml
 *.kubeconfig
-AGENT.md
+AGENTS.md
 docs/
 .windsurf/
 .worktrees/
