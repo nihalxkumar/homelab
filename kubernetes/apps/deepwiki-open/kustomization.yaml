@@ -10,6 +10,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - ingress.yaml
+  - ingress-tailscale.yaml
   - middleware.yaml
   - certificate.yaml
 

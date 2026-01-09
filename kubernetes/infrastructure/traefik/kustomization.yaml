@@ -8,3 +8,4 @@ resources:
    - tlsstore.yaml
    - ingress-argocd.yaml
    - certificate.yaml
+   - middleware-tailscale.yaml
