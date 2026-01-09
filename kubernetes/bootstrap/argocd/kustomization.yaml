@@ -9,6 +9,7 @@ resources:
    - root-app.yaml
    - app.yaml
    - apps-app.yaml
+   - ingress-tailscale.yaml
 
 patches:
   - path: argocd-cm-ksops-patch.yaml

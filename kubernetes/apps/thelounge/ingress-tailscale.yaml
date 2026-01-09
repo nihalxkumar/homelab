@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: thelounge-tailscale
+  namespace: thelounge
+  annotations:
+    tailscale.com/funnel: "false"  # Set to "true" if you want public access via Tailscale Funnel
+spec:
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        - thelounge
+  rules:
+    - host: thelounge
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: thelounge
+                port:
+                  number: 9000

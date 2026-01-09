@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: deepwiki-tailscale
+  namespace: deepwiki-open
+  annotations:
+    tailscale.com/funnel: "false"
+spec:
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        - deepwiki
+  rules:
+    - host: deepwiki
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: deepwiki
+                port:
+                  number: 3000
