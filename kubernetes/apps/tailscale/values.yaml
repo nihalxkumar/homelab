@@ -1,2 +1,4 @@
 operatorConfig:
   hostname: "homelab-operator"
+  defaultTags:
+    - "tag:k8s-operator"
