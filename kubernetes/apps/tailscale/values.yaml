@@ -1,0 +1,13 @@
+oauth:
+  clientId: ""
+  clientSecret: ""
+
+operatorConfig:
+  hostname: "homelab-operator"
+
+apiServerProxyConfig:
+  mode: "true"
+
+proxyConfig:
+  defaultTags:
+    - "tag:k8s"
