@@ -9,10 +9,8 @@ resources:
   - configmap.yaml
   - deployment.yaml
   - service.yaml
-  - ingress.yaml
   - ingress-tailscale.yaml
   - middleware.yaml
-  - certificate.yaml
 
 generators:
   - secret-generator.yaml

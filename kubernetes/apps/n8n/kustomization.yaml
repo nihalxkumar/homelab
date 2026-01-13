@@ -12,9 +12,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - middleware.yaml
-  - ingress.yaml
   - ingress-tailscale.yaml
-  - certificate.yaml
   - networkpolicy.yaml
   - backup-cronjob.yaml
 

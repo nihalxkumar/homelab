@@ -12,9 +12,7 @@ resources:
   - chrome.yaml
   - deployment.yaml
   - service.yaml
-  - ingress.yaml
   - ingress-tailscale.yaml
-  - certificate.yaml
   - middleware.yaml
 
 generators:

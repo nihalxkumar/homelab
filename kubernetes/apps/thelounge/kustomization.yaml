@@ -6,6 +6,5 @@ resources:
   - pvc.yaml
   - deployment.yaml
   - service.yaml
-  - ingress.yaml
   - ingress-tailscale.yaml
   - middleware.yaml
