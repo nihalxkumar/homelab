@@ -1,0 +1,71 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: homelab
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: "66.0.0"
+    helm:
+      releaseName: monitoring
+      values: |
+        grafana:
+          ingress:
+            enabled: true
+            ingressClassName: tailscale
+            annotations:
+              tailscale.com/funnel: "false"
+            hosts:
+              - grafana
+            tls:
+              - hosts:
+                  - grafana
+          persistence:
+            enabled: true
+            storageClassName: local-path
+            size: 2Gi
+        prometheus:
+          ingress:
+            enabled: true
+            ingressClassName: tailscale
+            annotations:
+              tailscale.com/funnel: "false"
+            hosts:
+              - prometheus
+            tls:
+              - hosts:
+                  - prometheus
+          prometheusSpec:
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: local-path
+                  accessModes: ["ReadWriteOnce"]
+                  resources:
+                    requests:
+                      storage: 10Gi
+        alertmanager:
+          enabled: true
+          alertmanagerSpec:
+            storage:
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: local-path
+                  accessModes: ["ReadWriteOnce"]
+                  resources:
+                    requests:
+                      storage: 2Gi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

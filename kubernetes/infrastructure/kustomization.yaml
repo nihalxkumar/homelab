@@ -8,3 +8,4 @@ resources:
   - cert-manager/
   - axiom/
   - reloader/
+  - monitoring/
