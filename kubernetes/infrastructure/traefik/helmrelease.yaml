@@ -23,6 +23,10 @@ spec:
         metrics:
           prometheus:
             enabled: true
+            serviceMonitor:
+              enabled: true
+              additionalLabels:
+                release: monitoring
         
         logs:
           general:
