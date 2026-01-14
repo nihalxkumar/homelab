@@ -20,7 +20,7 @@
       apt:
         update_cache: yes
         name: tailscale
-        state: present
+        state: latest
 
     - name: Enable Tailscale service
       service:
