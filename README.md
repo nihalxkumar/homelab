@@ -85,7 +85,7 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
     <tr>
         <td><img width="32" src="https://avatars.githubusercontent.com/u/48932923?s=200&v=4"></td>
         <td><a href="https://tailscale.com">Tailscale</a></td>
-        <td>Disabling Public SSH to only allow Tailnet configuration</td>
+        <td>Kubernetes Operator & MagicDNS for secure service exposure</td>
     </tr>
     <tr>
         <td><img width="32" src="https://avatars.githubusercontent.com/u/100373852?s=200&v=4"></td>
@@ -118,6 +118,26 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
         <td>Version control with colocated .git directory</td>
     </tr>
     <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/159397742?s=200&v=4"></td>
+        <td><a href="https://github.com/glanceapp/glance">Glance</a></td>
+        <td>Homepage dashboard & feed aggregator</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/45487711?s=200&v=4"></td>
+        <td><a href="https://n8n.io">n8n</a></td>
+        <td>Workflow automation tool</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/194295535?s=200&v=4"></td>
+        <td><a href="https://github.com/AsyncFuncAI/deepwiki-open">DeepWiki</a></td>
+        <td>AI-powered documentation & knowledge base</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/202258986?s=200&v=4"></td>
+        <td><a href="https://github.com/karakeep-app/karakeep">KaraKeep</a></td>
+        <td>Bookmarks Manager</td>
+    </tr>
+    <tr>
         <td><img width="32" src="https://avatars.githubusercontent.com/u/14336958?s=200&v=4"></td>
         <td><a href="https://thelounge.chat">The Lounge</a></td>
         <td>Web Client for Internet Relay Chat</td>
@@ -128,3 +148,4 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
         <td>6 GB RAM, 5 vCPU, 100 GB NVMe SSD</td>
     </tr>
 </table>
+
