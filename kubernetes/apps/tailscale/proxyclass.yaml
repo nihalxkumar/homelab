@@ -6,5 +6,5 @@ spec:
   staticEndpoints:
     nodePort:
       ports:
-        - start: 30000
-          end: 32767
+        - port: 30000
+          endPort: 32767
