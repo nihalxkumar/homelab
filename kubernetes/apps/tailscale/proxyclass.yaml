@@ -3,6 +3,6 @@ kind: ProxyClass
 metadata:
   name: hostnetwork
 spec:
-  statefulSet:
-    pod:
-      hostNetwork: true
+  staticEndpoints:
+    - ip: "192.3.1.204" # maya node IP
+      port: 41641
