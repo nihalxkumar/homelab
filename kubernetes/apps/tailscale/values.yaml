@@ -5,3 +5,4 @@ operatorConfig:
 
 proxyConfig:
   defaultTags: "tag:k8s"
+  hostNetwork: true
