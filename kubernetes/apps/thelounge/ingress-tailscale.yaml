@@ -4,7 +4,8 @@ metadata:
   name: thelounge-tailscale
   namespace: thelounge
   annotations:
-    tailscale.com/funnel: "false"  # Set to "true" if you want public access via Tailscale Funnel
+    tailscale.com/funnel: "false" # Set to "true" if you want public access via Tailscale Funnel
+    tailscale.com/proxy-class: "hostnetwork"
 spec:
   ingressClassName: tailscale
   tls:
