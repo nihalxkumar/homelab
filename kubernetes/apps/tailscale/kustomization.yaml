@@ -5,6 +5,7 @@ namespace: tailscale
 
 resources:
   - namespace.yaml
+  - proxyclass.yaml
 
 generators:
   - secret-generator.yaml

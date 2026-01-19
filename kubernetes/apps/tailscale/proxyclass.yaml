@@ -1,0 +1,8 @@
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyClass
+metadata:
+  name: hostnetwork
+spec:
+  statefulSet:
+    pod:
+      hostNetwork: true
