@@ -1,5 +1,6 @@
 stages:
   - lint
+  - validate
   - security
 
 variables:
@@ -43,6 +44,52 @@ docs:check:
     - main
 
 # ============================================================================
+# VALIDATE STAGE
+# ============================================================================
+
+kustomize:build:
+  stage: validate
+  image: bitnami/kubectl:latest
+  before_script:
+    - curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+    - mv kustomize /usr/local/bin/
+  script:
+    - echo "Building all Kustomize overlays..."
+    - |
+      find kubernetes -name "kustomization.yaml" -type f | while read kust_file; do
+        dir=$(dirname "$kust_file")
+        echo "Building $dir..."
+        kustomize build "$dir" > /dev/null || exit 1
+        echo "✓ $dir builds successfully"
+      done
+    - echo "✓ All Kustomize builds passed"
+  allow_failure: false
+  only:
+    - merge_requests
+    - main
+
+kubeval:validate:
+  stage: validate
+  image: alpine/helm:latest
+  before_script:
+    - helm plugin install https://github.com/instrumenta/helm-kubeval || true
+    - wget -q https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
+    - tar xf kubeval-linux-amd64.tar.gz -C /usr/local/bin
+  script:
+    - echo "Validating Kubernetes manifests..."
+    - |
+      find kubernetes -name "*.yaml" -type f ! -name "kustomization.yaml" ! -name "*.sops.yaml" ! -name "secret*.yaml" | while read file; do
+        if grep -q "apiVersion:" "$file" 2>/dev/null; then
+          kubeval "$file" --strict --ignore-missing-schemas || true
+        fi
+      done
+    - echo "✓ Kubeval validation complete"
+  allow_failure: true
+  only:
+    - merge_requests
+    - main
+
+# ============================================================================
 # SECURITY STAGE
 # ============================================================================
 
@@ -63,18 +110,26 @@ secrets:detect:
 sops:validate:
   stage: security
   image: alpine:latest
+  before_script:
+    - wget -q https://github.com/getsops/sops/releases/download/v3.8.1/sops-v3.8.1.linux.amd64 -O /usr/local/bin/sops
+    - chmod +x /usr/local/bin/sops
   script:
     - echo "Validating SOPS encrypted files..."
     - |
-      find kubernetes -name "*.encrypted.yaml" -o -name "*.enc.yaml" 2>/dev/null | while read file; do
-        if [ -z "$(file "$file" 2>/dev/null | grep 'ASCII')" ]; then
-          echo "✓ $file is encrypted"
+      find kubernetes -name "*.sops.yaml" -type f | while read file; do
+        if sops -d "$file" > /dev/null 2>&1; then
+          echo "✓ $file is properly SOPS-encrypted"
         else
-          echo "✗ $file should be encrypted but isn't"
+          echo "✗ $file is not valid SOPS-encrypted or decryption failed"
           exit 1
         fi
       done
-    - echo "✓ All secrets appear to be encrypted"
+    - |
+      find kubernetes -path "*/secrets/*" -name "*.yaml" -type f ! -name "*.sops.yaml" | while read file; do
+        echo "✗ $file in secrets/ directory should use .sops.yaml extension"
+        exit 1
+      done
+    - echo "✓ All secrets properly encrypted with SOPS"
   allow_failure: false
   only:
     - merge_requests
