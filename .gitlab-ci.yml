@@ -49,10 +49,7 @@ docs:check:
 
 kustomize:build:
   stage: validate
-  image: bitnami/kubectl:latest
-  before_script:
-    - curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
-    - mv kustomize /usr/local/bin/
+  image: alpine/k8s:latest
   script:
     - echo "Building all Kustomize overlays..."
     - |
