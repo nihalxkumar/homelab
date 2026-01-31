@@ -54,6 +54,7 @@ kustomize:build:
     - apk add --no-cache curl bash
     - curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
     - mv kustomize /usr/local/bin/
+    - curl -fsSL https://get.helm.sh/helm-v3.17.0-linux-amd64.tar.gz | tar -xz --strip-components=1 -C /usr/local/bin linux-amd64/helm
   variables:
     KUSTOMIZE_ENABLE_ALPHA_COMMANDS: "true"
   script:
