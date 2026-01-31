@@ -127,7 +127,7 @@ sops:validate:
     - echo "Validating SOPS encrypted files..."
     - |
       find kubernetes -name "*.sops.yaml" -type f | while read file; do
-        if grep -q "sops_version" "$file" 2>/dev/null && grep -q "age" "$file" 2>/dev/null; then
+        if grep -q "^sops:$" "$file" 2>/dev/null && grep -q "age:" "$file" 2>/dev/null; then
           echo "✓ $file has SOPS envelope (Age encrypted)"
         else
           echo "✗ $file missing SOPS envelope"
