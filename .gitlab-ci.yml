@@ -54,13 +54,15 @@ kustomize:build:
     - apk add --no-cache curl bash
     - curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
     - mv kustomize /usr/local/bin/
+  variables:
+    KUSTOMIZE_ENABLE_ALPHA_COMMANDS: "true"
   script:
     - echo "Building all Kustomize overlays..."
     - |
       find kubernetes -name "kustomization.yaml" -type f | while read kust_file; do
         dir=$(dirname "$kust_file")
         echo "Building $dir..."
-        kustomize build "$dir" > /dev/null || exit 1
+        kustomize build --enable-alpha-plugins "$dir" > /dev/null || exit 1
         echo "✓ $dir builds successfully"
       done
     - echo "✓ All Kustomize builds passed"
