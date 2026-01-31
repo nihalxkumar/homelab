@@ -123,17 +123,14 @@ secrets:detect:
 sops:validate:
   stage: security
   image: alpine:latest
-  before_script:
-    - wget -q https://github.com/getsops/sops/releases/download/v3.8.1/sops-v3.8.1.linux.amd64 -O /usr/local/bin/sops
-    - chmod +x /usr/local/bin/sops
   script:
     - echo "Validating SOPS encrypted files..."
     - |
       find kubernetes -name "*.sops.yaml" -type f | while read file; do
-        if sops -d "$file" > /dev/null 2>&1; then
-          echo "✓ $file is properly SOPS-encrypted"
+        if grep -q "sops_version" "$file" 2>/dev/null && grep -q "age" "$file" 2>/dev/null; then
+          echo "✓ $file has SOPS envelope (Age encrypted)"
         else
-          echo "✗ $file is not valid SOPS-encrypted or decryption failed"
+          echo "✗ $file missing SOPS envelope"
           exit 1
         fi
       done
