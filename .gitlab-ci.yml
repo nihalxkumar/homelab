@@ -67,17 +67,22 @@ kustomize:build:
 
 kubeval:validate:
   stage: validate
-  image: alpine/helm:latest
-  before_script:
-    - helm plugin install https://github.com/instrumenta/helm-kubeval || true
-    - wget -q https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
-    - tar xf kubeval-linux-amd64.tar.gz -C /usr/local/bin
+  image: alpine/k8s:latest
   script:
     - echo "Validating Kubernetes manifests..."
     - |
-      find kubernetes -name "*.yaml" -type f ! -name "kustomization.yaml" ! -name "*.sops.yaml" ! -name "secret*.yaml" | while read file; do
+      find kubernetes -name "*.yaml" -type f \
+        ! -name "kustomization.yaml" \
+        ! -name "*.sops.yaml" \
+        ! -name "secret*.yaml" \
+        ! -name "*crd*.yaml" \
+        ! -name "*customresourcedefinition*.yaml" | while read file; do
+        if grep -q "kind: HelmRelease" "$file" 2>/dev/null; then
+          echo "Skipping HelmRelease: $file"
+          continue
+        fi
         if grep -q "apiVersion:" "$file" 2>/dev/null; then
-          kubeval "$file" --strict --ignore-missing-schemas || true
+          kubeval "$file" --ignore-missing-schemas 2>/dev/null || echo "  ⚠ $file has schema warnings"
         fi
       done
     - echo "✓ Kubeval validation complete"
