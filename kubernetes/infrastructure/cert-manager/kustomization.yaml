@@ -9,6 +9,6 @@ resources:
   - certificate.yaml
   # cloudflare-api-token secret is created manually and maintained separately
   # (SOPS encryption is incompatible with ArgoCD sync)
-  # - secrets/cloudflare-secret.yaml
+  # - secrets/cloudflare-secret.sops.yaml
   # selfsigned-issuer.yaml removed: uses same name/namespace as certificate.yaml
   # (was actually using letsencrypt-prod, not self-signed)
