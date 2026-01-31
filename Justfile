@@ -49,3 +49,27 @@ encrypt file:
 
 decrypt file:
     sops --decrypt --in-place {{file}}
+
+# --- Validation & Linting ---
+
+lint:
+    @echo "Linting Ansible playbooks..."
+    ansible-lint ansible/ -p || true
+    @echo ""
+    @echo "Checking for unencrypted secrets..."
+    @find kubernetes -path "*/secrets/*" -name "*.yaml" ! -name "*.sops.yaml" -type f | grep . && echo "WARNING: Unencrypted secrets found!" || echo "✓ All secrets use .sops.yaml extension"
+
+validate:
+    @echo "Validating Kubernetes manifests..."
+    @find kubernetes -name "kustomization.yaml" -type f | while read kust_file; do \
+        dir=$(dirname "$kust_file"); \
+        echo "Building $dir..."; \
+        kustomize build "$dir" > /dev/null || exit 1; \
+        echo "  ✓ $dir"; \
+    done
+    @echo ""
+    @echo "✓ All Kustomize builds passed"
+
+kustomize-build path="kubernetes":
+    @echo "Building Kustomize overlay: {{path}}"
+    kustomize build {{path}}
