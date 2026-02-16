@@ -16,3 +16,9 @@ resources:
 
 generators:
    - secret-generator.yaml
+
+images:
+  - name: glanceapp/glance
+    newTag: "v0.8.4"
+  - name: busybox
+    newTag: "1.36.1"
