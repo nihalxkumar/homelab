@@ -6,7 +6,7 @@ metadata:
 resources:
   - helmrelease.yaml
   - clusterissuer.yaml
-  - certificate.yaml
+  # certificate.yaml removed: argocd accessed via tailnet, traefik has its own cert
   # cloudflare-api-token secret is created manually and maintained separately
   # (SOPS encryption is incompatible with ArgoCD sync)
   # - secrets/cloudflare-secret.sops.yaml
