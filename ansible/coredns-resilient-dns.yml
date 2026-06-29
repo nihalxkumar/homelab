@@ -1,0 +1,57 @@
+---
+# Make cluster DNS resilient to a NextDNS outage.
+#
+# The bundled k3s CoreDNS addon forwards every external lookup to a single
+# provider (NextDNS) over DNS-over-TLS. When NextDNS misbehaves the whole
+# cluster loses external resolution at once: image pulls fail, the Tailscale
+# proxy pods can no longer reach Tailscale control/DERP (so every *.ts.net app
+# appears down even though the pods are healthy), and TheLounge cannot reach
+# IRC. NextDNS is therefore a single point of failure with no fallback.
+#
+# This playbook keeps NextDNS as the primary resolver but adds Quad9 as an
+# automatic fallback so a NextDNS hiccup no longer takes the cluster offline.
+# CoreDNS 1.10.1 (the version this k3s ships) only supports one block-level
+# tls_servername per forward block, so each provider gets its own server block
+# on a loopback port and the main block forwards to them in order, failing over
+# on SERVFAIL/REFUSED or when the primary is unhealthy.
+#
+# CoreDNS config lives in the k3s-managed addon manifest rather than in the
+# GitOps tree, which is why this change is applied here. Editing the file makes
+# the k3s addon controller re-apply the ConfigMap, and CoreDNS's `reload` plugin
+# picks the change up within a minute, so no kubectl call is needed. Re-run this
+# playbook after a k3s upgrade, which regenerates the bundled coredns.yaml and
+# would otherwise revert the fallback.
+
+- name: Harden cluster DNS with a Quad9 fallback
+  hosts: vps
+  become: true
+
+  vars:
+    coredns_manifest: /var/lib/rancher/k3s/server/manifests/coredns.yaml
+
+  tasks:
+    # Rewrite the whole forward region (everything between `prometheus :9153`
+    # and the top-level `import .../*.server`) to the canonical primary/fallback
+    # setup. Anchoring on those stable markers makes this converge from ANY
+    # starting state -- the current NextDNS-only config, or the plain
+    # `forward . /etc/resolv.conf` that k3s regenerates after an upgrade -- and
+    # it is idempotent because re-applying produces byte-identical output.
+    - name: CoreDNS | Set NextDNS primary with Quad9 fallback
+      ansible.builtin.replace:
+        path: "{{ coredns_manifest }}"
+        backup: true
+        regexp: 'prometheus :9153[\s\S]*?import /etc/coredns/custom/\*\.server'
+        replace: "prometheus :9153\n        forward . 127.0.0.1:5300 127.0.0.1:5301 {\n          policy sequential\n          failover SERVFAIL REFUSED\n        }\n        cache 30\n        loop\n        reload\n        loadbalance\n        import /etc/coredns/custom/*.override\n    }\n\n    .:5300 {\n        forward . tls://45.90.28.0 tls://45.90.30.0 {\n          tls_servername 7eead5.dns.nextdns.io\n          health_check 10s\n        }\n    }\n\n    .:5301 {\n        forward . tls://9.9.9.9 tls://149.112.112.112 {\n          tls_servername dns.quad9.net\n          health_check 10s\n        }\n    }\n\n    import /etc/coredns/custom/*.server"
+
+    # Fail loudly if the fallback is not present (e.g. the manifest formatting
+    # changed and the replace above matched nothing).
+    - name: CoreDNS | Verify the Quad9 fallback is present
+      ansible.builtin.command: grep -q 'tls://9.9.9.9 tls://149.112.112.112' "{{ coredns_manifest }}"
+      changed_when: false
+
+    - name: CoreDNS | Reload note
+      ansible.builtin.debug:
+        msg: >-
+          CoreDNS config updated. The k3s addon controller re-applies the
+          ConfigMap and CoreDNS reloads within ~1-2 minutes. To apply
+          immediately, run: kubectl -n kube-system rollout restart deploy/coredns

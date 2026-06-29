@@ -20,6 +20,10 @@ run-playbook playbook:
 setup-dns:
     cd ansible && ansible-playbook -i inventory/hosts.ini dns-tunnel.yml -K
 
+# Add a Quad9 fallback to CoreDNS so a NextDNS outage can't take the cluster down (re-run after k3s upgrades)
+harden-dns:
+    cd ansible && ansible-playbook -i inventory/hosts.ini coredns-resilient-dns.yml -K
+
 # --- Kubernetes (K8s) ---
 
 sync-kubeconfig:
