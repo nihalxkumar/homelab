@@ -23,4 +23,4 @@ commonLabels:
 
 images:
   - name: ghcr.io/asyncfuncai/deepwiki-open
-    newTag: "bc1e12a"
+    newTag: "sha-16f35a0"
