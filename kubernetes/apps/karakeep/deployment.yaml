@@ -4,7 +4,7 @@ metadata:
   name: karakeep
   namespace: karakeep
   annotations:
-    glance/url: https://karakeep.nihalxkumar.dev
+    glance/url: ""
     glance/icon: si:gitbook
 spec:
   replicas: 1
