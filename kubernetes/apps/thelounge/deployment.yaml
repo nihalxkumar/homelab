@@ -4,7 +4,7 @@ metadata:
   name: thelounge
   namespace: thelounge
   annotations:
-    glance/url: https://irc.nihalxkumar.dev
+    glance/url: ""
     glance/icon: si:liberadotchat
 spec:
   replicas: 1
