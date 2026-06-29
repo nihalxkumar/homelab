@@ -10,7 +10,9 @@ spec:
   source:
     repoURL: https://stakater.github.io/stakater-charts
     chart: reloader
-    targetRevision: "v1.4.12"
+    # Chart version 2.2.7 ships reloader appVersion v1.4.12 (targetRevision is the
+    # chart version, not the app version — the previous "v1.4.12" pin was invalid).
+    targetRevision: "2.2.7"
     helm:
       releaseName: reloader
       values: |
