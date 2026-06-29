@@ -63,3 +63,8 @@
         src: "/home/{{ k3s_admin_user }}/.kube/config" # <--- Changed from /etc/rancher...
         dest: "./k3s-vps.yaml"
         flat: yes
+
+# Keep cluster DNS resilient to a NextDNS outage. Imported here so every
+# `just provision` re-applies the Quad9 fallback, including after a k3s upgrade
+# that regenerates the bundled coredns.yaml and would otherwise revert it.
+- import_playbook: coredns-resilient-dns.yml
