@@ -11,8 +11,8 @@ data:
   DATA_DIR: "/data"
   LOG_LEVEL: "info"
   # Automatic Tagging
-  INFERENCE_TEXT_MODEL: "llama-3.3-70b-versatile"
-  INFERENCE_IMAGE_MODEL: "llama-3.3-70b-versatile"
+  INFERENCE_TEXT_MODEL: "llama-3.1-8b-instant"
+  INFERENCE_IMAGE_MODEL: "llama-3.1-8b-instant"
   INFERENCE_ENABLE_AUTO_TAGGING: "true"
   INFERENCE_OUTPUT_SCHEMA: "json"
   # Browser for crawling
