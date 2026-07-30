@@ -5,14 +5,15 @@ metadata:
   namespace: karakeep
 data:
   NEXTAUTH_URL: "https://karakeep.nihalxkumar.dev"
-  OPENAI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta/openai/"
+  OPENAI_BASE_URL: "https://api.groq.com/openai/v1"
   MEILI_ADDR: "http://karakeep-meilisearch:7700"
   REDIS_URL: "redis://karakeep-redis:6379"
   DATA_DIR: "/data"
   LOG_LEVEL: "info"
   # Automatic Tagging
-  INFERENCE_TEXT_MODEL: "gemini-2.0-flash"
-  INFERENCE_IMAGE_MODEL: "gemini-2.0-flash"
+  INFERENCE_TEXT_MODEL: "llama-3.3-70b-versatile"
+  INFERENCE_IMAGE_MODEL: "llama-3.3-70b-versatile"
   INFERENCE_ENABLE_AUTO_TAGGING: "true"
+  INFERENCE_OUTPUT_SCHEMA: "json"
   # Browser for crawling
   BROWSER_WEB_URL: "http://karakeep-chrome:9222"

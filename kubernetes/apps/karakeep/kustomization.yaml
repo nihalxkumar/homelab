@@ -10,6 +10,7 @@ resources:
   - pvc.yaml
   - meilisearch.yaml
   - chrome.yaml
+  - redis.yaml
   - deployment.yaml
   - service.yaml
   - ingress-tailscale.yaml
