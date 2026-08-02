@@ -5,7 +5,7 @@ metadata:
   labels:
     app: deepwiki
 spec:
-  replicas: 1
+  replicas: 0 # Disabled - scaled to zero, config left in place
   strategy:
     type: Recreate
   selector:
