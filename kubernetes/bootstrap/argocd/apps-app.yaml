@@ -19,6 +19,8 @@ spec:
             path: kubernetes/apps/deepwiki-open
           - app: tailscale
             path: kubernetes/apps/tailscale
+          - app: media
+            path: kubernetes/apps/media
   template:
     metadata:
       name: '{{app}}'

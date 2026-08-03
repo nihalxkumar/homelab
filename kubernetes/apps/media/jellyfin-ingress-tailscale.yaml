@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jellyfin-tailscale
+  namespace: media
+  annotations:
+    # "true" publishes this to the public internet via Tailscale Funnel so
+    # friends/family can access it without installing Tailscale. Requires the
+    # nodeAttrs funnel grant in the Tailscale admin console ACLs (see AGENTS.md).
+    tailscale.com/funnel: "true"
+spec:
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        - jellyfin
+  rules:
+    - host: jellyfin
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: jellyfin
+                port:
+                  number: 80
