@@ -5,7 +5,8 @@ metadata:
   labels:
     app: deepwiki
 spec:
-  replicas: 0 # Disabled - scaled to zero, config left in place
+  # Decommissioned — keep at 0. Live cluster had drifted to 1; git is source of truth.
+  replicas: 0
   strategy:
     type: Recreate
   selector:
@@ -42,13 +43,14 @@ spec:
         - name: data
           mountPath: /root/.adalflow # Mapped from docker-compose.yml
         
+        # Clamped for 6Gi node if ever re-enabled (was 1Gi/4Gi — absurd overcommit).
         resources:
           requests:
-            cpu: 500m
-            memory: 1Gi
+            cpu: 100m
+            memory: 256Mi
           limits:
-            cpu: 2000m
-            memory: 4Gi
+            cpu: 1000m
+            memory: 768Mi
         
         # Health check from docker-compose
         livenessProbe:
