@@ -21,6 +21,10 @@ patches:
     target:
       kind: Deployment
       name: argocd-repo-server
+  - path: argocd-application-controller-gomemlimit-patch.yaml
+    target:
+      kind: StatefulSet
+      name: argocd-application-controller
 
 configMapGenerator:
   - name: argocd-cmd-params-cm

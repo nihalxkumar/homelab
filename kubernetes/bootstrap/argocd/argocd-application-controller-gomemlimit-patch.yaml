@@ -1,0 +1,14 @@
+# Cap Go GC for application-controller so RSS stops drifting on a 6Gi single-node.
+# StatefulSet target — see kustomization.yaml patches.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: argocd-application-controller
+spec:
+  template:
+    spec:
+      containers:
+        - name: argocd-application-controller
+          env:
+            - name: GOMEMLIMIT
+              value: "200MiB"
