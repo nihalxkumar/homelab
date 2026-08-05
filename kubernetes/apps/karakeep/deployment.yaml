@@ -31,15 +31,20 @@ spec:
                 name: karakeep-config
             - secretRef:
                 name: karakeep-secrets
+          env:
+            # Cap V8 old-space so Next.js doesn't sit at ~550Mi RSS on a 6Gi node.
+            # 384 leaves headroom under the 512Mi limit for non-heap RSS.
+            - name: NODE_OPTIONS
+              value: "--max-old-space-size=384"
           volumeMounts:
             - name: data
               mountPath: /data
           resources:
             requests:
-              memory: "512Mi"
-              cpu: "200m"
+              memory: "256Mi"
+              cpu: "100m"
             limits:
-              memory: "1Gi"
+              memory: "512Mi"
               cpu: "500m"
       volumes:
         - name: data
