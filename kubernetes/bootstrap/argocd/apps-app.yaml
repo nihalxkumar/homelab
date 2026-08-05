@@ -13,8 +13,6 @@ spec:
             path: kubernetes/apps/glance
           - app: karakeep
             path: kubernetes/apps/karakeep
-          - app: n8n
-            path: kubernetes/apps/n8n
           - app: deepwiki-open
             path: kubernetes/apps/deepwiki-open
           - app: tailscale

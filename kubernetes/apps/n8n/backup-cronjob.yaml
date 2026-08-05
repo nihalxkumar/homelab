@@ -8,9 +8,11 @@ metadata:
     app: n8n
     component: backup
 spec:
+  # Suspended — n8n is decommissioned (replicas: 0).
+  suspend: true
   schedule: "0 2 * * *"
-  successfulJobsHistoryLimit: 7
-  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
   
   jobTemplate:

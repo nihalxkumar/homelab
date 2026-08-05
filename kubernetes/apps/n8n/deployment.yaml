@@ -11,7 +11,8 @@ metadata:
     glance/url: ""
     glance/icon: si:n8n
 spec:
-  replicas: 1
+  # Decommissioned — scaled to zero, config kept in place.
+  replicas: 0
   strategy:
     type: Recreate
   selector:
