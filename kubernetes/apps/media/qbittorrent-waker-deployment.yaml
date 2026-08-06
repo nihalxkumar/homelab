@@ -16,9 +16,9 @@ data:
         def do_GET(self):
             try:
                 subprocess.run(["kubectl", "scale", "deployment", DEPLOYMENT, "-n", NAMESPACE, "--replicas=1"], check=True)
-                print("Successfully scaled qBittorrent to 1 replica.")
+                print("Successfully scaled qBittorrent to 1 replica.", flush=True)
             except Exception as e:
-                print(f"Error scaling qBittorrent: {e}")
+                print(f"Error scaling qBittorrent: {e}", flush=True)
 
             html = """<!DOCTYPE html>
     <html lang="en">
@@ -54,7 +54,7 @@ data:
             pass
 
     if __name__ == "__main__":
-        print("Starting qBittorrent Waker Service on port 8080...")
+        print("Starting qBittorrent Waker Service on port 8080...", flush=True)
         HTTPServer(("0.0.0.0", 8080), WakeHandler).serve_forever()
 ---
 apiVersion: apps/v1
