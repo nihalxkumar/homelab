@@ -30,9 +30,11 @@
         default: allow
         direction: outgoing
 
-    - name: UFW | Allow SSH
+    - name: UFW | Allow SSH on Tailscale interface
       ufw:
         rule: allow
+        direction: in
+        interface: tailscale0
         port: "{{ ssh_port }}"
         proto: tcp
 
@@ -92,24 +94,27 @@
         state: present
       notify: Restart SSH
 
-    - name: SSH | Disable Password Authentication
-      lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: "^PasswordAuthentication"
-        line: "PasswordAuthentication no"
-        state: present
+    - name: SSH | Disable password-based authentication before cloud-init defaults
+      copy:
+        dest: /etc/ssh/sshd_config.d/00-hardening.conf
+        content: |
+          PasswordAuthentication no
+          KbdInteractiveAuthentication no
+        owner: root
+        group: root
+        mode: "0644"
       notify: Restart SSH
 
     # --- Sudoers Configuration ---
     - name: Sudoers | Allow arjun passwordless sudo
-     lineinfile:
-       path: /etc/sudoers.d/arjun
-       line: "arjun ALL=(ALL) NOPASSWD:ALL"
-       create: yes
-       mode: '0440'
-       validate: /usr/sbin/visudo -cf %s
+      lineinfile:
+        path: /etc/sudoers.d/arjun
+        line: "arjun ALL=(ALL) NOPASSWD:ALL"
+        create: yes
+        mode: '0440'
+        validate: /usr/sbin/visudo -cf %s
 
-    handlers:
+  handlers:
     - name: Restart SSH
       service:
         name: ssh

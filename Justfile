@@ -27,7 +27,7 @@ harden-dns:
 # --- Kubernetes (K8s) ---
 
 sync-kubeconfig:
-    scp arjun@192.3.1.204:~/.kube/config ~/.kube/config-vps
+    scp arjun@100.84.231.21:~/.kube/config ~/.kube/config-vps
     @echo "Config saved to ~/.kube/config-vps. Exporting KUBECONFIG..."
     @echo "Run: export KUBECONFIG=~/.kube/config-vps"
 
