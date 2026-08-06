@@ -1,0 +1,120 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: qbittorrent-waker-script
+  namespace: media
+data:
+  waker.py: |
+    import os
+    import subprocess
+    from http.server import HTTPServer, BaseHTTPRequestHandler
+
+    DEPLOYMENT = "qbittorrent"
+    NAMESPACE = "media"
+
+    class WakeHandler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            try:
+                subprocess.run(["kubectl", "scale", "deployment", DEPLOYMENT, "-n", NAMESPACE, "--replicas=1"], check=True)
+                print("Successfully scaled qBittorrent to 1 replica.")
+            except Exception as e:
+                print(f"Error scaling qBittorrent: {e}")
+
+            html = """<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="refresh" content="5;url=/">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Starting qBittorrent</title>
+        <style>
+            body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+            .card { background: #1e293b; padding: 2.5rem; border-radius: 16px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); max-width: 420px; width: 90%; border: 1px solid #334155; }
+            .spinner { border: 4px solid #334155; border-top: 4px solid #38bdf8; border-radius: 50%; width: 44px; height: 44px; animation: spin 1s linear infinite; margin: 1.5rem auto; }
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+            a { color: #38bdf8; text-decoration: none; font-weight: 500; }
+            a:hover { text-decoration: underline; }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <h2>⚡ Starting qBittorrent</h2>
+            <div class="spinner"></div>
+            <p>qBittorrent is booting up in your homelab...</p>
+            <p><small>Redirecting to WebUI in 5 seconds.<br><br><a href="/">Click here if not redirected</a></small></p>
+        </div>
+    </body>
+    </html>"""
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(html.encode("utf-8"))
+
+        def log_message(self, format, *args):
+            pass
+
+    if __name__ == "__main__":
+        print("Starting qBittorrent Waker Service on port 8080...")
+        HTTPServer(("0.0.0.0", 8080), WakeHandler).serve_forever()
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent-waker
+  namespace: media
+  labels:
+    app.kubernetes.io/name: qbittorrent-waker
+    app.kubernetes.io/part-of: homelab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qbittorrent-waker
+  template:
+    metadata:
+      labels:
+        app: qbittorrent-waker
+    spec:
+      serviceAccountName: qbittorrent-autostop
+      containers:
+        - name: waker
+          image: python:3.12-alpine
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              apk add --no-auth --no-cache curl > /dev/null 2>&1 || true
+              KUBECTL_VERSION=$(curl -sL https://dl.k8s.io/release/stable.txt)
+              curl -sLO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+              chmod +x kubectl && mv kubectl /usr/local/bin/
+              python3 /scripts/waker.py
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - name: script-vol
+              mountPath: /scripts
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "16Mi"
+            limits:
+              cpu: "50m"
+              memory: "32Mi"
+      volumes:
+        - name: script-vol
+          configmap:
+            name: qbittorrent-waker-script
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbittorrent-waker
+  namespace: media
+spec:
+  selector:
+    app: qbittorrent-waker
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080

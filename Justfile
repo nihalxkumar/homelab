@@ -46,6 +46,17 @@ tunnel-status:
 tunnel-logs:
     ssh arjun@100.84.231.21 "journalctl -u cloudflared -n 100 -f"
 
+# --- qBittorrent Controls ---
+
+start-qbittorrent:
+    export KUBECONFIG=~/.kube/config-vps && kubectl scale deployment qbittorrent -n media --replicas=1
+
+stop-qbittorrent:
+    export KUBECONFIG=~/.kube/config-vps && kubectl scale deployment qbittorrent -n media --replicas=0
+
+qbittorrent-status:
+    export KUBECONFIG=~/.kube/config-vps && kubectl get deployment qbittorrent -n media && kubectl get cronjob qbittorrent-autostop -n media
+
 # --- Security (SOPS) ---
 
 encrypt file:

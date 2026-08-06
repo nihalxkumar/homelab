@@ -10,6 +10,9 @@ resources:
   - qbittorrent-deployment.yaml
   - qbittorrent-service.yaml
   - qbittorrent-ingress-tailscale.yaml
+  - qbittorrent-autostop-rbac.yaml
+  - qbittorrent-autostop-cronjob.yaml
+  - qbittorrent-waker-deployment.yaml
   - jellyfin-deployment.yaml
   - jellyfin-service.yaml
   - jellyfin-ingress-tailscale.yaml

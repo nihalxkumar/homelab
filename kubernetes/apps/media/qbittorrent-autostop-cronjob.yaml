@@ -1,0 +1,133 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: qbittorrent-autostop-script
+  namespace: media
+data:
+  autostop.py: |
+    import os
+    import json
+    import urllib.request
+    import urllib.parse
+    import http.cookiejar
+    import subprocess
+    import sys
+
+    QBIT_URL = "http://qbittorrent.media.svc.cluster.local:8080"
+    DEPLOYMENT = "qbittorrent"
+    NAMESPACE = "media"
+
+    def scale_down():
+        print("Scaling qBittorrent deployment to 0 replicas...")
+        res = subprocess.run(["kubectl", "scale", "deployment", DEPLOYMENT, "-n", NAMESPACE, "--replicas=0"], capture_output=True, text=True)
+        print(res.stdout)
+        if res.stderr:
+            print(res.stderr, file=sys.stderr)
+
+    def main():
+        # Check current replicas
+        res = subprocess.run(["kubectl", "get", "deployment", DEPLOYMENT, "-n", NAMESPACE, "-o", "jsonpath={.spec.replicas}"], capture_output=True, text=True)
+        current_replicas = res.stdout.strip()
+        if current_replicas == "0":
+            print("qBittorrent is already scaled to 0. Nothing to do.")
+            return
+
+        cookie_jar = http.cookiejar.CookieJar()
+        opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cookie_jar))
+        
+        torrents = None
+        try:
+            req = urllib.request.Request(f"{QBIT_URL}/api/v2/torrents/info", headers={"User-Agent": "qBittorrent-AutoStop/1.0"})
+            with opener.open(req, timeout=10) as resp:
+                data = resp.read().decode('utf-8')
+                torrents = json.loads(data)
+        except urllib.error.HTTPError as e:
+            if e.code == 403:
+                login_data = urllib.parse.urlencode({"username": "admin", "password": os.environ.get("QB_PASSWORD", "adminadmin")}).encode('utf-8')
+                try:
+                    login_req = urllib.request.Request(f"{QBIT_URL}/api/v2/auth/login", data=login_data, headers={"User-Agent": "qBittorrent-AutoStop/1.0"})
+                    with opener.open(login_req, timeout=10) as lresp:
+                        pass
+                    req = urllib.request.Request(f"{QBIT_URL}/api/v2/torrents/info", headers={"User-Agent": "qBittorrent-AutoStop/1.0"})
+                    with opener.open(req, timeout=10) as resp:
+                        torrents = json.loads(resp.read().decode('utf-8'))
+                except Exception as login_err:
+                    print(f"Failed to authenticate with qBittorrent: {login_err}")
+                    return
+            else:
+                print(f"HTTP error checking qBittorrent API: {e}")
+                return
+        except Exception as err:
+            print(f"Could not connect to qBittorrent API (pod may be offline or starting): {err}")
+            return
+
+        if torrents is None:
+            print("Could not retrieve torrent list. Skipping.")
+            return
+
+        active_states = {
+            "downloading", "stalledDL", "forcedDL", "queuedDL", "metaDL", "allocating", "checkingDL",
+            "uploading", "stalledUP", "forcedUP", "queuedUP", "checkingUP"
+        }
+
+        active_torrents = []
+        for t in torrents:
+            state = t.get("state", "")
+            dlspeed = t.get("dlspeed", 0)
+            upspeed = t.get("upspeed", 0)
+            if state in active_states or dlspeed > 0 or upspeed > 0:
+                active_torrents.append(t.get("name", "unnamed"))
+
+        print(f"Total torrents: {len(torrents)}, Active torrents: {len(active_torrents)}")
+
+        if len(active_torrents) == 0:
+            print("No active downloading or seeding torrents detected.")
+            scale_down()
+        else:
+            print(f"Active torrents running: {', '.join(active_torrents[:3])}... Keeping qBittorrent running.")
+
+    if __name__ == "__main__":
+        main()
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: qbittorrent-autostop
+  namespace: media
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: qbittorrent-autostop
+          restartPolicy: OnFailure
+          containers:
+            - name: autostop-checker
+              image: python:3.12-alpine
+              imagePullPolicy: IfNotPresent
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  apk add --no-auth --no-cache curl > /dev/null 2>&1 || true
+                  KUBECTL_VERSION=$(curl -sL https://dl.k8s.io/release/stable.txt)
+                  curl -sLO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+                  chmod +x kubectl && mv kubectl /usr/local/bin/
+                  python3 /scripts/autostop.py
+              volumeMounts:
+                - name: script-vol
+                  mountPath: /scripts
+              resources:
+                requests:
+                  cpu: "25m"
+                  memory: "32Mi"
+                limits:
+                  cpu: "100m"
+                  memory: "64Mi"
+          volumes:
+            - name: script-vol
+              configmap:
+                name: qbittorrent-autostop-script

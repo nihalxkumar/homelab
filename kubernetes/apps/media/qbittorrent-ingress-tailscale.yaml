@@ -15,6 +15,13 @@ spec:
     - host: qbittorrent
       http:
         paths:
+          - path: /wake
+            pathType: Prefix
+            backend:
+              service:
+                name: qbittorrent-waker
+                port:
+                  number: 8080
           - path: /
             pathType: Prefix
             backend:
