@@ -104,7 +104,7 @@ spec:
               memory: "32Mi"
       volumes:
         - name: script-vol
-          configmap:
+          configMap:
             name: qbittorrent-waker-script
 ---
 apiVersion: v1

@@ -130,5 +130,5 @@ spec:
                   memory: "64Mi"
           volumes:
             - name: script-vol
-              configmap:
+              configMap:
                 name: qbittorrent-autostop-script
