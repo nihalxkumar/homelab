@@ -83,10 +83,11 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              apk add --no-auth --no-cache curl > /dev/null 2>&1 || true
-              KUBECTL_VERSION=$(curl -sL https://dl.k8s.io/release/stable.txt)
-              curl -sLO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
-              chmod +x kubectl && mv kubectl /usr/local/bin/
+              if [ ! -f /usr/local/bin/kubectl ]; then
+                KUBECTL_VERSION=$(wget -qO- https://dl.k8s.io/release/stable.txt)
+                wget -qO /usr/local/bin/kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+                chmod +x /usr/local/bin/kubectl
+              fi
               python3 /scripts/waker.py
           ports:
             - containerPort: 8080

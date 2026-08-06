@@ -20,11 +20,12 @@ spec:
           command: ["sh", "-c"]
           args:
             - |
+              set -e
               echo "Installing KSOPS...";
               apk add --no-cache curl ca-certificates;
-              curl -fsSL https://raw.githubusercontent.com/viaduct-ai/kustomize-sops/master/scripts/install-ksops-archive.sh | sh;
-              cp -f "$(command -v ksops)" /custom-tools/ksops;
-              echo "Done.";
+              curl -fsSL https://raw.githubusercontent.com/viaduct-ai/kustomize-sops/master/scripts/install-ksops-archive.sh | INSTALL_DIR=/custom-tools sh;
+              test -f /custom-tools/ksops;
+              echo "KSOPS installed successfully.";
           volumeMounts:
             - mountPath: /custom-tools
               name: custom-tools
