@@ -2,8 +2,6 @@
 - name: Install and Configure Tailscale
   hosts: vps
   become: true
-  vars:
-    tailscale_auth_key: "{{ tailscale_auth_key }}"
 
   tasks:
     - name: Add Tailscale GPG key
@@ -28,21 +26,25 @@
         state: started
         enabled: yes
 
-    - name: Authenticate Tailscale (One time run)
-      command: tailscale up --authkey={{ tailscale_auth_key }} --hostname=racknerd-vps
+    # One-time bootstrap: authenticate with auth key and set all preferences.
+    # Pass via: just run-playbook tailscale.yml -e tailscale_auth_key=tskey-xxx
+    - name: Authenticate Tailscale with tags, SSH, and DNS (one-time)
+      command: tailscale up --authkey={{ tailscale_auth_key }} --reset --hostname=maya --advertise-tags=tag:k8s --ssh --accept-dns=true --accept-risk=lose-ssh
       register: tailscale_start
       changed_when: "'Success' in tailscale_start.stdout"
-      ignore_errors: yes # Ignores error if already logged in
-
-    - name: Configure Tailscale MagicDNS and split DNS
-      command: |
-        tailscale set \
-          --accept-dns=true \
-          --advertise-tags=tag:homelab
-      become: no
-      register: tailscale_dns_config
-      changed_when: "'Configuration changed' in tailscale_dns_config.stdout or tailscale_dns_config.rc == 0"
       ignore_errors: yes
+      when: tailscale_auth_key is defined
+
+    # Idempotent: update all preferences on already-authenticated nodes.
+    # --reset clears previous preferences so we don't need to restate every non-default flag.
+    # --accept-risk=lose-ssh acknowledges that enabling Tailscale SSH may disconnect
+    # the current session if Ansible is connected over the Tailscale interface.
+    - name: Update Tailscale tags, SSH, and DNS
+      command: tailscale up --reset --hostname=maya --advertise-tags=tag:k8s --ssh --accept-dns=true --accept-risk=lose-ssh
+      register: tailscale_update
+      changed_when: "'Success' in tailscale_update.stdout or tailscale_update.rc == 0"
+      ignore_errors: yes
+      when: tailscale_auth_key is not defined
 
     - name: Display Tailscale status
       command: tailscale status
