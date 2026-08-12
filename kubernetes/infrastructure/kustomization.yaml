@@ -8,4 +8,5 @@ resources:
   - cert-manager/
   - axiom/
   - reloader/
-  - monitoring/
+  # monitoring/ decommissioned to free ~800Mi on 6Gi node.
+  # Re-enable by adding monitoring/ back to resources.
