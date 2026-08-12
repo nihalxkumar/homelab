@@ -15,6 +15,13 @@ spec:
       releaseName: monitoring
       values: |
         grafana:
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
           dashboardProviders:
             dashboardproviders.yaml:
               apiVersion: 1
@@ -67,6 +74,15 @@ spec:
               - hosts:
                   - prometheus
           prometheusSpec:
+            resources:
+              requests:
+                cpu: "100m"
+                memory: "512Mi"
+              limits:
+                cpu: "500m"
+                memory: "1Gi"
+            retention: "7d"
+            retentionSize: "5GB"
             storageSpec:
               volumeClaimTemplate:
                 spec:
@@ -74,10 +90,17 @@ spec:
                   accessModes: ["ReadWriteOnce"]
                   resources:
                     requests:
-                      storage: 10Gi
+                      storage: 5Gi
         alertmanager:
           enabled: true
           alertmanagerSpec:
+            resources:
+              requests:
+                cpu: "25m"
+                memory: "32Mi"
+              limits:
+                cpu: "100m"
+                memory: "64Mi"
             storage:
               volumeClaimTemplate:
                 spec:
@@ -86,6 +109,22 @@ spec:
                   resources:
                     requests:
                       storage: 2Gi
+        kube-state-metrics:
+          resources:
+            requests:
+              cpu: "25m"
+              memory: "32Mi"
+            limits:
+              cpu: "100m"
+              memory: "64Mi"
+        prometheus-node-exporter:
+          resources:
+            requests:
+              cpu: "25m"
+              memory: "25Mi"
+            limits:
+              cpu: "100m"
+              memory: "64Mi"
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

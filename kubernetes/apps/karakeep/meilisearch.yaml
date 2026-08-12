@@ -30,6 +30,13 @@ spec:
               value: "production"
           ports:
             - containerPort: 7700
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "512Mi"
           volumeMounts:
             - name: data
               mountPath: /meili_data
