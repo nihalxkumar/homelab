@@ -25,27 +25,10 @@ patches:
     target:
       kind: StatefulSet
       name: argocd-application-controller
-  # Resource limits for remaining ArgoCD workloads (multi-doc patch file)
-  - path: argocd-resource-limits-patch.yaml
-    target:
-      kind: Deployment
-      name: argocd-server
-  - path: argocd-resource-limits-patch.yaml
-    target:
-      kind: Deployment
-      name: argocd-redis
-  - path: argocd-resource-limits-patch.yaml
-    target:
-      kind: Deployment
-      name: argocd-dex-server
-  - path: argocd-resource-limits-patch.yaml
-    target:
-      kind: Deployment
-      name: argocd-notifications-controller
-  - path: argocd-resource-limits-patch.yaml
-    target:
-      kind: Deployment
-      name: argocd-applicationset-controller
+
+# Resource limits for remaining ArgoCD workloads (multi-doc strategic merge)
+patchesStrategicMerge:
+  - argocd-resource-limits-patch.yaml
 
 configMapGenerator:
   - name: argocd-cmd-params-cm
