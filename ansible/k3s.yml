@@ -13,9 +13,18 @@
         path: /swapfile
       register: swap_file
 
-    - name: System | Create Swap File
-      command: fallocate -l 2G /swapfile
-      when: not swap_file.stat.exists
+    - name: System | Disable Undersized Swap File
+      command: swapoff /swapfile
+      register: swapoff_result
+      changed_when: swapoff_result.rc == 0
+      failed_when: false
+      when:
+        - swap_file.stat.exists
+        - swap_file.stat.size != 6 * 1024 * 1024 * 1024
+
+    - name: System | Allocate Swap File
+      command: fallocate -l 6G /swapfile
+      when: not swap_file.stat.exists or swap_file.stat.size != 6 * 1024 * 1024 * 1024
 
     - name: System | Secure Swap File
       file:
@@ -24,7 +33,7 @@
 
     - name: System | Format Swap File
       command: mkswap /swapfile
-      when: not swap_file.stat.exists
+      when: not swap_file.stat.exists or swap_file.stat.size != 6 * 1024 * 1024 * 1024
 
     - name: System | Persist Swap File
       lineinfile:
@@ -34,7 +43,28 @@
 
     - name: System | Enable Swap File
       command: swapon /swapfile
-      when: ansible_facts['swaptotal_mb'] == 0
+      when: ansible_facts['swaptotal_mb'] == 0 or not swap_file.stat.exists or swap_file.stat.size != 6 * 1024 * 1024 * 1024
+
+    # Keep interactive tools such as compilers inside a boundary. Without it,
+    # one Tree-sitter parser build can consume more memory than the cluster.
+    - name: System | Create User Memory Limit Directory
+      file:
+        path: /etc/systemd/system/user-1000.slice.d
+        state: directory
+        mode: "0755"
+
+    - name: System | Limit Interactive User Memory
+      copy:
+        dest: /etc/systemd/system/user-1000.slice.d/memory.conf
+        content: |
+          [Slice]
+          MemoryHigh=1G
+          MemoryMax=1536M
+          MemorySwapMax=4G
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload Systemd
 
     - name: System | Install Prerequisites
       apt:
@@ -84,6 +114,11 @@
         src: "/home/{{ k3s_admin_user }}/.kube/config" # <--- Changed from /etc/rancher...
         dest: "./k3s-vps.yaml"
         flat: yes
+
+  handlers:
+    - name: Reload Systemd
+      systemd:
+        daemon_reload: true
 
 # Keep cluster DNS resilient to a NextDNS outage. Imported here so every
 # `just provision` re-applies the Quad9 fallback, including after a k3s upgrade
