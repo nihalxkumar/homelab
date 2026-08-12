@@ -6,14 +6,35 @@
     - inventory/host_vars/vps.yml
 
   tasks:
-    - name: System | Disable Swap (K8s Requirement)
-      command: swapoff -a
-      when: ansible_facts['swaptotal_mb'] > 0
-    - name: System | Remove Swap from fstab
-      replace:
+    # Pods remain unable to swap; this file protects host services during
+    # short memory spikes so the kernel does not kill SSH or Tailscale.
+    - name: System | Check Swap File
+      stat:
+        path: /swapfile
+      register: swap_file
+
+    - name: System | Create Swap File
+      command: fallocate -l 2G /swapfile
+      when: not swap_file.stat.exists
+
+    - name: System | Secure Swap File
+      file:
+        path: /swapfile
+        mode: "0600"
+
+    - name: System | Format Swap File
+      command: mkswap /swapfile
+      when: not swap_file.stat.exists
+
+    - name: System | Persist Swap File
+      lineinfile:
         path: /etc/fstab
-        regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
-        replace: '# \1'
+        line: /swapfile none swap sw 0 0
+        state: present
+
+    - name: System | Enable Swap File
+      command: swapon /swapfile
+      when: ansible_facts['swaptotal_mb'] == 0
 
     - name: System | Install Prerequisites
       apt:

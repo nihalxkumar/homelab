@@ -9,5 +9,9 @@ k3s_server_args: >-
   --write-kubeconfig-mode 644
   --disable-cloud-controller
   --disable traefik
+  --kubelet-arg fail-swap-on=false
+  --kubelet-arg system-reserved=memory=512Mi
+  --kubelet-arg kube-reserved=memory=512Mi
+  --kubelet-arg "eviction-hard=memory.available<500Mi,nodefs.available<10%,imagefs.available<15%"
 # --kubelet-arg="protect-kernel-defaults=true"
 k3s_admin_user: "arjun"
