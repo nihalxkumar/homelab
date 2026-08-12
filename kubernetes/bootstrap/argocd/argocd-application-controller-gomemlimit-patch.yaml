@@ -1,4 +1,5 @@
-# Cap Go GC for application-controller so RSS stops drifting on a 6Gi single-node.
+# Cap memory for application-controller on a 6Gi single-node.
+# GOMEMLIMIT tells the Go runtime to GC before RSS hits the K8s limit.
 # StatefulSet target — see kustomization.yaml patches.
 apiVersion: apps/v1
 kind: StatefulSet
@@ -11,4 +12,11 @@ spec:
         - name: argocd-application-controller
           env:
             - name: GOMEMLIMIT
-              value: "200MiB"
+              value: "400MiB"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"

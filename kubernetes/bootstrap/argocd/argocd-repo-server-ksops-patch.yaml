@@ -23,7 +23,7 @@ spec:
               set -e
               echo "Installing KSOPS...";
               apk add --no-cache curl ca-certificates;
-              curl -fsSL https://raw.githubusercontent.com/viaduct-ai/kustomize-sops/master/scripts/install-ksops-archive.sh | INSTALL_DIR=/custom-tools sh;
+              curl -fsSL https://raw.githubusercontent.com/viaduct-ai/kustomize-sops/master/scripts/install-ksops-archive.sh | sh -s -- /custom-tools;
               test -f /custom-tools/ksops;
               echo "KSOPS installed successfully.";
           volumeMounts:
@@ -36,6 +36,13 @@ spec:
               value: /.config
             - name: SOPS_AGE_KEY_FILE
               value: /.config/sops/age/keys.txt
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
           volumeMounts:
             - mountPath: /usr/local/bin/ksops
               name: custom-tools
