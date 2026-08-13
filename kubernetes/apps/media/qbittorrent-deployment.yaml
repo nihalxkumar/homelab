@@ -20,41 +20,7 @@ spec:
       annotations:
         reloader.stakater.com/auto: "true"
     spec:
-      initContainers:
-        - name: gluetun
-          image: ghcr.io/qdm12/gluetun:v3.38.0
-          imagePullPolicy: IfNotPresent
-          restartPolicy: Always
-          securityContext:
-            capabilities:
-              add:
-                - NET_ADMIN
-          env:
-            - name: VPN_SERVICE_PROVIDER
-              value: "custom"
-            - name: VPN_TYPE
-              value: "wireguard"
-            - name: WIREGUARD_ADDRESSES
-              value: "172.16.0.2/32"
-            - name: WIREGUARD_PUBLIC_KEY
-              value: "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo="
-            - name: WIREGUARD_ENDPOINT_IP
-              value: "162.159.192.10"
-            - name: WIREGUARD_ENDPOINT_PORT
-              value: "2408"
-          envFrom:
-            - secretRef:
-                name: gluetun-warp
-          volumeMounts:
-            - name: tun
-              mountPath: /dev/net/tun
-          resources:
-            requests:
-              memory: "64Mi"
-              cpu: "50m"
-            limits:
-              memory: "128Mi"
-              cpu: "250m"
+
       containers:
         - name: qbittorrent
           image: lscr.io/linuxserver/qbittorrent:5.2.3
