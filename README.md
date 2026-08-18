@@ -138,11 +138,6 @@ This repository uses **Infrastructure as Code** and **GitOps** principles to ful
         <td>Bookmarks Manager</td>
     </tr>
     <tr>
-        <td><img width="32" src="https://avatars.githubusercontent.com/u/14336958?s=200&v=4"></td>
-        <td><a href="https://thelounge.chat">The Lounge</a></td>
-        <td>Web Client for Internet Relay Chat</td>
-    </tr>
-    <tr>
         <td><img width="32" src="https://cdn-icons-png.flaticon.com/512/7779/7779541.png"></td>
         <td><a href="https://racknerd.com">Infrastructure </a></td>
         <td>6 GB RAM, 5 vCPU, 100 GB NVMe SSD</td>

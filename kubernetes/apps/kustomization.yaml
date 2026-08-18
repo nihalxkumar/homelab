@@ -5,7 +5,6 @@ metadata:
 
 resources:
   - karakeep/
-  - thelounge/
   - glance/
   - n8n/
   - deepwiki-open/
